@@ -56,18 +56,26 @@ forge test -vvv
 ## 📁 Repository Structure
 
 ```
-├── src/
-│   └── MultiSend.sol         # Core MultiSend Smart Contract (Native BOT + ERC20)
-├── test/
-│   ├── MultiSend.t.sol       # 14/14 Foundry Unit & Revert Tests
-│   └── mocks/
-│       └── MockERC20.sol     # Test mocks (ERC20, Reverting ERC20, Rejecting Receiver)
-├── script/
-│   └── Deploy.s.sol          # Foundry deployment script
+├── backend/                  # Smart Contract & Foundry Test Environment
+│   ├── src/
+│   │   └── MultiSend.sol     # Core MultiSend Smart Contract (Native BOT + ERC20)
+│   ├── test/
+│   │   ├── MultiSend.t.sol   # 14/14 Foundry Unit & Revert Tests
+│   │   └── mocks/
+│   │       └── MockERC20.sol # Test mocks
+│   ├── script/
+│   │   └── Deploy.s.sol      # Deployment script
+│   ├── foundry.toml          # Foundry config (Solc 0.8.24)
+│   ├── remappings.txt        # Import path mappings
+│   └── package.json          # OpenZeppelin dependencies
+├── frontend/                 # Web DApp User Interface
+│   ├── index.html            # Web DApp HTML Layout
+│   ├── styles.css            # Dark Theme Glassmorphism UI
+│   └── app.js                # Ethers.js v6 Wallet & Contract Integration
 ├── Dockerfile                # Docker build definition
 ├── docker-compose.yml        # Docker Compose configuration
-├── foundry.toml              # Foundry config (Solc 0.8.24)
-└── remappings.txt            # Import path mappings
+├── .env.example              # Environment variables template
+└── README.md                 # Documentation
 ```
 
 ---
