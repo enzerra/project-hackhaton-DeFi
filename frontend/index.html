@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOTFlow AI — Intelligent Asset Distribution Platform</title>
+    <meta name="description" content="AI-powered atomic asset distribution platform for BOT Chain EVM. Fast, gas-optimized, 100% All-or-Nothing batch transfers.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Ethers.js v6 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo-group">
+                <span class="logo-icon">🤖</span>
+                <div>
+                    <h1 class="logo-title">BOTFlow <span class="gradient-text">AI</span></h1>
+                    <p class="logo-subtitle">Intelligent Asset Distribution for BOT Chain</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="network-badge" id="networkBadge">
+                    <span class="status-dot disconnected"></span>
+                    <span id="networkName">Disconnected</span>
+                </div>
+
+                <button id="btnConnect" class="btn btn-primary btn-glow">
+                    <span class="btn-icon">🦊</span>
+                    <span id="lblConnect">Connect Wallet</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <div class="main-container">
+
+            <!-- TOP BANNER -->
+            <section class="banner-card glass-panel">
+                <div class="banner-content">
+                    <div class="badge-pill">⚡ 100% Guaranteed Atomic Execution</div>
+                    <h2>Zero Human Error Asset Batching</h2>
+                    <p>Execute multi-wallet payouts for Hackathons, DAO Payroll, and Airdrops in 1 single transaction. All-or-Nothing execution ensures 0% risk of partial loss.</p>
+                </div>
+                <div class="banner-stats">
+                    <div class="stat-box">
+                        <span class="stat-value gradient-text">~64.2%</span>
+                        <span class="stat-label">Gas Saved</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-value">1 Tx</span>
+                        <span class="stat-label">Atomic Batch</span>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid-layout">
+                <!-- LEFT COLUMN: INPUT & TEMPLATES -->
+                <div class="left-column">
+                    
+                    <!-- AI PROMPT ASSISTANT -->
+                    <div class="glass-panel card">
+                        <div class="card-header">
+                            <h3>🤖 AI Distribution Assistant</h3>
+                            <span class="badge-subtle">Natural Language</span>
+                        </div>
+                        <p class="card-desc">Type your distribution plan in plain text or pick a pre-configured template.</p>
+
+                        <div class="prompt-box">
+                            <textarea id="aiPrompt" placeholder="Example: Send 50 BOT to 0x123... (Juara 1 50%), 30 BOT to 0x456... (Juara 2 30%), 20 BOT to 0x789... (Juara 3 20%)" rows="3"></textarea>
+                            <button id="btnGenerateAI" class="btn btn-secondary btn-sm">
+                                <span>🪄 Generate Plan with AI</span>
+                            </button>
+                        </div>
+
+                        <!-- TEMPLATE SELECTION -->
+                        <div class="templates-group">
+                            <label class="input-label">Quick Templates:</label>
+                            <div class="template-buttons">
+                                <button class="btn-template" data-template="hackathon">🏆 Hackathon Prize (50/30/20%)</button>
+                                <button class="btn-template" data-template="payroll">💼 DAO Payroll</button>
+                                <button class="btn-template" data-template="airdrop">🎁 Community Airdrop</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOKEN ENGINE & RECIPIENTS FORM -->
+                    <div class="glass-panel card margin-top">
+                        <div class="card-header">
+                            <h3>💸 Distribution Parameters</h3>
+                            
+                            <!-- MODE TOGGLE -->
+                            <div class="engine-toggle">
+                                <button id="modeNative" class="toggle-btn active">Native BOT</button>
+                                <button id="modeERC20" class="toggle-btn">ERC20 Token</button>
+                            </div>
+                        </div>
+
+                        <!-- ERC20 TOKEN ADDRESS INPUT (Hidden by default) -->
+                        <div id="erc20Group" class="form-group hidden">
+                            <label for="tokenAddress" class="input-label">ERC20 Token Contract Address:</label>
+                            <input type="text" id="tokenAddress" class="form-input" placeholder="0x... (e.g. USDT / USDC Contract)">
+                        </div>
+
+                        <!-- RECIPIENTS LIST -->
+                        <div class="recipients-header">
+                            <label class="input-label">Recipients (Max 3 for Atomic Guarantee):</label>
+                            <button id="btnAddRecipient" class="btn-text">+ Add Recipient</button>
+                        </div>
+
+                        <div id="recipientsList" class="recipients-list">
+                            <!-- Rows inserted dynamically by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: VERIFICATION & EXECUTION -->
+                <div class="right-column">
+                    
+                    <!-- AI SAFETY VERIFICATION CHECKLIST -->
+                    <div class="glass-panel card">
+                        <div class="card-header">
+                            <h3>🛡️ AI Safety Verification</h3>
+                            <span id="verificationBadge" class="badge-success">Ready</span>
+                        </div>
+
+                        <ul class="checklist">
+                            <li id="chkRecipients" class="check-item check-pass">
+                                <span class="check-icon">✓</span>
+                                <span class="check-text">Valid Recipient Count (1 to 3 wallets)</span>
+                            </li>
+                            <li id="chkDuplicates" class="check-item check-pass">
+                                <span class="check-icon">✓</span>
+                                <span class="check-text">No Duplicate Addresses Detected</span>
+                            </li>
+                            <li id="chkZeroAddress" class="check-item check-pass">
+                                <span class="check-icon">✓</span>
+                                <span class="check-text">No Zero Addresses (0x0...0)</span>
+                            </li>
+                            <li id="chkBalance" class="check-item check-pass">
+                                <span class="check-icon">✓</span>
+                                <span class="check-text">Sufficient Sender Balance</span>
+                            </li>
+                            <li id="chkAllowance" class="check-item check-pass">
+                                <span class="check-icon">✓</span>
+                                <span class="check-text">Sufficient ERC20 Allowance</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- TRANSACTION SUMMARY & EXECUTION -->
+                    <div class="glass-panel card margin-top">
+                        <div class="card-header">
+                            <h3>📊 Execution Summary</h3>
+                        </div>
+
+                        <div class="summary-details">
+                            <div class="summary-row">
+                                <span class="summary-label">Target Token</span>
+                                <span id="sumToken" class="summary-val">Native BOT</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">Total Recipients</span>
+                                <span id="sumCount" class="summary-val">3 Wallets</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">Total Amount</span>
+                                <span id="sumTotal" class="summary-val gradient-text">0.00 BOT</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">Atomic Contract</span>
+                                <span class="summary-val monospace" title="0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9">0x9118...f9E9</span>
+                            </div>
+                        </div>
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="action-buttons">
+                            <button id="btnApprove" class="btn btn-secondary btn-full hidden">
+                                Approve ERC20 Token
+                            </button>
+                            <button id="btnExecute" class="btn btn-primary btn-full btn-glow">
+                                ⚡ Execute Atomic Distribution
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TRANSACTION LOG / HISTORY -->
+                    <div class="glass-panel card margin-top">
+                        <div class="card-header">
+                            <h3>📜 Recent Activity</h3>
+                        </div>
+                        <div id="txLog" class="tx-log">
+                            <p class="log-empty">No transactions executed in this session.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>Built for <strong>BOT Chain Build Week Hackathon</strong> • Contract Deployed at <a href="https://scan.bohr.life/address/0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9" target="_blank" class="link-footer">0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9</a></p>
+    </footer>
+
+    <!-- App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@ FROM ghcr.io/foundry-rs/foundry:latest AS foundry
 
 FROM node:20-slim
 
-WORKDIR /app
+WORKDIR /app/backend
 
 # Install git and essential CLI tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -17,19 +17,16 @@ COPY --from=foundry /usr/local/bin/forge /usr/local/bin/forge
 COPY --from=foundry /usr/local/bin/cast /usr/local/bin/cast
 COPY --from=foundry /usr/local/bin/anvil /usr/local/bin/anvil
 
-# Copy dependency configurations
-COPY package*.json ./
-COPY remappings.txt ./
-COPY foundry.toml ./
+# Copy backend source code & dependencies
+COPY backend/package*.json ./
+COPY backend/remappings.txt ./
+COPY backend/foundry.toml ./
 
-# Install npm dependencies (OpenZeppelin contracts)
+# Install npm dependencies
 RUN npm install
 
-# Copy source code, tests, and scripts
-COPY src/ ./src/
-COPY test/ ./test/
-COPY script/ ./script/
-COPY lib/ ./lib/
+COPY backend/ ./
+COPY frontend/ /app/frontend/
 
-# Default command: Compile and run full test suite
+# Default command: Compile and run full test suite in backend
 CMD ["forge", "test", "-vvv"]
