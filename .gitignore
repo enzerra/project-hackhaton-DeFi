@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+lib/
+
+# Foundry build artifacts
+out/
+cache/
+
+# Environment variables & secrets
+.env
+*.pem
+*.key
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary test scripts
+test-compile.js
+test-compile-suite.js

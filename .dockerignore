@@ -1,0 +1,10 @@
+node_modules/
+out/
+cache/
+.git/
+.env
+Dockerfile
+docker-compose.yml
+.dockerignore
+test-compile.js
+test-compile-suite.js

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: botflow-multisend-app
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/out
+      - /app/cache
+    environment:
+      - SEPOLIA_RPC_URL=${SEPOLIA_RPC_URL:-https://rpc.bohr.life}
+      - PRIVATE_KEY=${PRIVATE_KEY:-}
+    command: forge test -vvv
