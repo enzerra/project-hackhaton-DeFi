@@ -18,14 +18,15 @@
 
 No need to install Rust, Foundry, or local dependencies manually. You can run the entire environment using Docker!
 
-### 1. Build and Run Tests in Docker
+### 1. Clone & Run Tests in Docker
 
 ```bash
+# Clone repository
+git clone https://github.com/enzerra/project-hackhaton-DeFi.git
+cd project-hackhaton-DeFi
+
 # Build Docker image and run full Foundry test suite
 docker compose up --build
-
-# Or run tests directly
-docker compose run --rm app forge test -vvv
 ```
 
 ---
@@ -43,13 +44,10 @@ docker compose run --rm app forge test -vvv
 # 1. Install dependencies
 npm install
 
-# 2. Clone forge-std library (if not present)
-git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
-
-# 3. Build contract
+# 2. Build contract
 forge build
 
-# 4. Run test suite
+# 3. Run test suite
 forge test -vvv
 ```
 
@@ -90,9 +88,7 @@ git commit -m "feat: initial commit for BOTFlow AI MultiSend Protocol with Docke
 
 # 4. Set main branch & add remote repository
 git branch -M main
-git remote add origin https://github.com/enzerra/botflow-multisend.git
-
-# 5. Push to GitHub
+git remote add origin https://github.com/enzerra/project-hackhaton-DeFi.git
 git push -u origin main
 ```
 
