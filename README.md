@@ -90,7 +90,7 @@ git commit -m "feat: initial commit for BOTFlow AI MultiSend Protocol with Docke
 
 # 4. Set main branch & add remote repository
 git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/botflow-multisend.git
+git remote add origin https://github.com/enzerra/botflow-multisend.git
 
 # 5. Push to GitHub
 git push -u origin main
