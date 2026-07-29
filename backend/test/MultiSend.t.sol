@@ -23,6 +23,8 @@ contract MultiSendTest is Test {
         uint256 recipientCount
     );
 
+    event EmergencyRescued(address indexed token, address indexed to, uint256 amount);
+
     function setUp() public {
         multiSend = new MultiSend();
         token = new MockERC20("Test Tether", "USDT", 6);
@@ -140,6 +142,30 @@ contract MultiSendTest is Test {
     }
 
     // ==========================================
+    // EMERGENCY RESCUE TESTS
+    // ==========================================
+
+    function test_EmergencyRescueERC20_Success() public {
+        // Accidental token transfer to contract
+        token.mint(address(multiSend), 500 * 10 ** 6);
+
+        // Owner rescues funds
+        multiSend.rescueERC20(address(token), walletA, 500 * 10 ** 6);
+
+        assertEq(token.balanceOf(walletA), 500 * 10 ** 6);
+    }
+
+    function test_EmergencyRescueNative_Success() public {
+        // Accidental native transfer to contract
+        vm.deal(address(multiSend), 5 ether);
+
+        // Owner rescues native funds
+        multiSend.rescueNative(payable(walletA), 5 ether);
+
+        assertEq(walletA.balance, 5 ether);
+    }
+
+    // ==========================================
     // FAILURE TESTS & REVERT SCENARIOS
     // ==========================================
 
@@ -203,23 +229,18 @@ contract MultiSendTest is Test {
     }
 
     function test_RevertIf_RecipientLimitExceeded() public {
-        address[] memory recipients = new address[](4);
-        recipients[0] = walletA;
-        recipients[1] = walletB;
-        recipients[2] = walletC;
-        recipients[3] = walletD;
-
-        uint256[] memory amounts = new uint256[](4);
-        amounts[0] = 10 * 10 ** 6;
-        amounts[1] = 10 * 10 ** 6;
-        amounts[2] = 10 * 10 ** 6;
-        amounts[3] = 10 * 10 ** 6;
+        address[] memory recipients = new address[](51);
+        uint256[] memory amounts = new uint256[](51);
+        for (uint256 i = 0; i < 51; i++) {
+            recipients[i] = address(uint160(i + 1));
+            amounts[i] = 10 * 10 ** 6;
+        }
 
         vm.expectRevert(
             abi.encodeWithSelector(
                 MultiSend.RecipientLimitExceeded.selector,
-                4,
-                3
+                51,
+                50
             )
         );
 

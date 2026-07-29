@@ -7,30 +7,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        dark: {
-          bg: '#080C14',
-          card: 'rgba(24, 34, 54, 0.75)',
-          surface: '#101726',
-        },
-        accent: {
-          cyan: '#00F2FE',
-          blue: '#4FACFE',
-          purple: '#7928CA',
-        },
-        brand: {
-          success: '#10B981',
-          danger: '#EF4444',
-          warning: '#F59E0B',
+        vercel: {
+          bg: '#FFFFFF',
+          card: '#FFFFFF',
+          surface: '#FAFAFA',
+          border: 'rgba(0, 0, 0, 0.08)',
+          text: '#171717',
+          muted: '#666666',
+          subtle: '#888888',
+          accent: '#0070F3',
+          red: '#FF5B4F',
+          pink: '#DE1D8D',
+          blue: '#0A72EF',
         }
       },
       fontFamily: {
-        display: ['Outfit', 'sans-serif'],
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
-      borderRadius: {
-        'sm': '6px',
-        'md': '12px',
-        'lg': '20px',
+      boxShadow: {
+        'vercel-border': '0px 0px 0px 1px rgba(0, 0, 0, 0.08)',
+        'vercel-card': '0px 0px 0px 1px rgba(0, 0, 0, 0.08), 0px 2px 4px rgba(0, 0, 0, 0.04)',
+        'vercel-hover': '0px 0px 0px 1px rgba(0, 0, 0, 0.16), 0px 6px 12px rgba(0, 0, 0, 0.06)',
       }
     },
   },

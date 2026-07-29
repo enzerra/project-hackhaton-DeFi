@@ -3,18 +3,20 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- * @title MultiSend Atomic Transfer Protocol (BOTFlow AI Engine)
- * @author Senior Solidity Engineer & Auditor
- * @notice Protocol to batch transfer ERC20 tokens or native BOT tokens to up to 3 recipients in a single atomic transaction.
- * @dev If any single transfer fails or validation rules are violated, the entire transaction reverts.
+ * @title MultiSend Atomic Transfer Protocol (BOTFlow Enterprise Engine)
+ * @author Lead Smart Contract Architect & Auditor
+ * @notice Protocol to batch transfer ERC20 tokens or native BOT tokens to up to 50 recipients in a single atomic transaction.
+ * @dev Inherits ReentrancyGuard for formal reentrancy protection and Ownable for emergency rescue governance.
  */
-contract MultiSend {
+contract MultiSend is ReentrancyGuard, Ownable {
     using SafeERC20 for IERC20;
 
-    /// @notice Maximum allowed recipients per transaction to prevent excessive gas consumption
-    uint256 public constant MAX_RECIPIENTS = 3;
+    /// @notice Maximum allowed recipients per batch transaction to prevent block gas limit issues
+    uint256 public constant MAX_RECIPIENTS = 50;
 
     // --- CUSTOM ERRORS ---
     error InvalidTokenAddress();
@@ -26,6 +28,7 @@ contract MultiSend {
     error InsufficientBalance(uint256 required, uint256 available);
     error InsufficientAllowance(uint256 required, uint256 available);
     error NativeTransferFailed(uint256 index);
+    error ZeroAddressProvided();
 
     // --- EVENTS ---
     /**
@@ -43,7 +46,20 @@ contract MultiSend {
     );
 
     /**
-     * @notice Executes atomic multi-send of ERC20 tokens to up to 3 recipients.
+     * @notice Emitted when emergency rescue functions recover tokens sent to contract address.
+     * @param token Address of token rescued (address(0) for native BOT).
+     * @param to Destination address receiving rescued funds.
+     * @param amount Amount of funds rescued.
+     */
+    event EmergencyRescued(address indexed token, address indexed to, uint256 amount);
+
+    /**
+     * @notice Initializes contract setting msg.sender as initial owner for governance.
+     */
+    constructor() Ownable(msg.sender) {}
+
+    /**
+     * @notice Executes atomic multi-send of ERC20 tokens to up to 50 recipients.
      * @dev User must grant sufficient allowance to this contract prior to invocation.
      * @param token ERC20 token contract address.
      * @param recipients Array of recipient wallet addresses.
@@ -53,7 +69,7 @@ contract MultiSend {
         address token,
         address[] calldata recipients,
         uint256[] calldata amounts
-    ) external {
+    ) external nonReentrant {
         // 1. Token validation
         if (token == address(0)) revert InvalidTokenAddress();
 
@@ -109,7 +125,7 @@ contract MultiSend {
     }
 
     /**
-     * @notice Executes atomic multi-send of native BOT tokens to up to 3 recipients.
+     * @notice Executes atomic multi-send of native BOT tokens to up to 50 recipients.
      * @dev Excess msg.value sent above total required amount is automatically refunded to msg.sender.
      * @param recipients Array of recipient wallet addresses.
      * @param amounts Array of native BOT amounts to be sent to each corresponding recipient.
@@ -117,7 +133,7 @@ contract MultiSend {
     function multiSendNative(
         address[] calldata recipients,
         uint256[] calldata amounts
-    ) external payable {
+    ) external payable nonReentrant {
         // 1. Recipients array validation
         uint256 recipientCount = recipients.length;
         if (recipientCount == 0) revert EmptyRecipients();
@@ -170,6 +186,30 @@ contract MultiSend {
         emit MultiSendExecuted(msg.sender, address(0), totalAmount, recipientCount);
     }
 
-    /// @notice Allow contract to receive native BOT tokens if necessary
+    /**
+     * @notice Emergency function to rescue ERC20 tokens accidentally sent to contract address.
+     * @param token Address of ERC20 token to rescue.
+     * @param to Address receiving rescued tokens.
+     * @param amount Amount of tokens to rescue.
+     */
+    function rescueERC20(address token, address to, uint256 amount) external onlyOwner nonReentrant {
+        if (token == address(0) || to == address(0)) revert ZeroAddressProvided();
+        IERC20(token).safeTransfer(to, amount);
+        emit EmergencyRescued(token, to, amount);
+    }
+
+    /**
+     * @notice Emergency function to rescue native BOT tokens accidentally sent to contract address.
+     * @param to Destination address receiving rescued native tokens.
+     * @param amount Amount of native tokens to rescue.
+     */
+    function rescueNative(address payable to, uint256 amount) external onlyOwner nonReentrant {
+        if (to == address(0)) revert ZeroAddressProvided();
+        (bool success, ) = to.call{value: amount}("");
+        if (!success) revert NativeTransferFailed(0);
+        emit EmergencyRescued(address(0), to, amount);
+    }
+
+    /// @notice Allow contract to receive native BOT tokens
     receive() external payable {}
 }

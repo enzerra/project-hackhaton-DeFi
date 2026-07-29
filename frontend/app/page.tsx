@@ -2,13 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { Navbar } from '../components/Navbar';
-import { Banner } from '../components/Banner';
-import { AIAssistant } from '../components/AIAssistant';
-import { DistributionForm, RecipientRow } from '../components/DistributionForm';
-import { VerificationChecklist } from '../components/VerificationChecklist';
-import { ExecutionSummary } from '../components/ExecutionSummary';
-import { ActivityLog, LogEntry } from '../components/ActivityLog';
+import { Navbar, DotLottiePlayer } from '../components/common';
+import {
+  LandingHero,
+  ProductShowcaseSection,
+  ComparisonSection,
+  FeaturesShowcase,
+  WorkflowSection,
+  FAQSection,
+  FaqAccordionSection,
+  CtaBanner,
+} from '../components/landing';
+import { WorkspaceDashboard } from '../components/workspace';
+import { GeminiChatModal } from '../components/ai';
 import {
   CONTRACT_ADDRESS,
   BOTCHAIN_TESTNET_PARAMS,
@@ -16,44 +22,96 @@ import {
   ERC20_ABI,
 } from '../lib/constants';
 
+interface RecipientRow {
+  id: string;
+  address: string;
+  amount: string;
+}
+
+const CHATBOT_LOTTIE_URL = 'https://lottie.host/889b0dba-90ad-4450-8617-1affbcb85fde/9LxEKBVZag.lottie';
+
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<'landing' | 'app'>('landing');
+  const [isAiChatOpen, setIsAiChatOpen] = useState<boolean>(false);
+
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [signer, setSigner] = useState<ethers.Signer | null>(null);
   const [userAddress, setUserAddress] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
+  // Live Wallet & Token Data
+  const [userBotBalance, setUserBotBalance] = useState<string>('0.0000');
+  const [erc20Balance, setErc20Balance] = useState<string>('0.0000');
+  const [erc20Symbol, setErc20Symbol] = useState<string>('TOKEN');
+
   const [isNativeMode, setIsNativeMode] = useState<boolean>(true);
   const [tokenAddress, setTokenAddress] = useState<string>('');
-  const [promptText, setPromptText] = useState<string>('');
 
+  // Start with 1 recipient row
   const [recipients, setRecipients] = useState<RecipientRow[]>([
-    { id: '1', address: '0x1111111111111111111111111111111111111111', amount: '50' },
-    { id: '2', address: '0x2222222222222222222222222222222222222222', amount: '30' },
-    { id: '3', address: '0x3333333333333333333333333333333333333333', amount: '20' },
+    { id: '1', address: '', amount: '' }
   ]);
 
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
-  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
   useEffect(() => {
     checkWalletConnected();
   }, []);
 
-  const addLog = (message: string, type: 'info' | 'success' | 'error' = 'info', txHash?: string) => {
-    const entry: LogEntry = {
-      id: Math.random().toString(36).substring(2),
-      time: new Date().toLocaleTimeString(),
-      message,
-      txHash,
-      type,
-    };
-    setLogs((prev) => [entry, ...prev]);
+  useEffect(() => {
+    if (isConnected && provider && userAddress) {
+      fetchUserNativeBalance();
+    }
+  }, [isConnected, provider, userAddress]);
+
+  useEffect(() => {
+    if (isConnected && signer && !isNativeMode && ethers.isAddress(tokenAddress)) {
+      fetchERC20Details(tokenAddress);
+    }
+  }, [isConnected, signer, isNativeMode, tokenAddress]);
+
+  const handleSwitchTab = (tab: 'landing' | 'app') => {
+    setActiveTab(tab);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const fetchUserNativeBalance = async () => {
+    if (!provider || !userAddress) return;
+    try {
+      const bal = await provider.getBalance(userAddress);
+      const formatted = parseFloat(ethers.formatEther(bal)).toFixed(4);
+      setUserBotBalance(formatted);
+    } catch (err) {
+      console.error('Error fetching native balance:', err);
+    }
+  };
+
+  const fetchERC20Details = async (tokenAddr: string) => {
+    if (!signer || !userAddress) return;
+    try {
+      const contract = new ethers.Contract(tokenAddr, ERC20_ABI, signer);
+      const [bal, dec, sym] = await Promise.all([
+        contract.balanceOf(userAddress),
+        contract.decimals(),
+        contract.symbol(),
+      ]);
+      const formatted = parseFloat(ethers.formatUnits(bal, dec)).toFixed(4);
+      setErc20Balance(formatted);
+      setErc20Symbol(sym);
+    } catch (err) {
+      console.error('Error fetching ERC20 details:', err);
+      setErc20Balance('0.0000');
+      setErc20Symbol('TOKEN');
+    }
   };
 
   const connectWallet = async () => {
     if (typeof window === 'undefined' || !(window as any).ethereum) {
-      alert('MetaMask extension is not installed! Please install MetaMask to use BOTChain.');
+      alert('MetaMask extension is not installed!');
       return;
     }
 
@@ -64,7 +122,6 @@ export default function Home() {
       const userSigner = await browserProvider.getSigner();
       const addr = await userSigner.getAddress();
 
-      // Switch to BOT Chain Testnet if needed
       const network = await browserProvider.getNetwork();
       if (Number(network.chainId) !== 968) {
         try {
@@ -86,11 +143,21 @@ export default function Home() {
       setSigner(userSigner);
       setUserAddress(addr);
       setIsConnected(true);
-      addLog(`Connected wallet: ${addr}`, 'success');
+
+      const bal = await browserProvider.getBalance(addr);
+      setUserBotBalance(parseFloat(ethers.formatEther(bal)).toFixed(4));
     } catch (err: any) {
       console.error(err);
-      addLog(`Wallet connection error: ${err.message}`, 'error');
     }
+  };
+
+  const disconnectWallet = () => {
+    setProvider(null);
+    setSigner(null);
+    setUserAddress(null);
+    setIsConnected(false);
+    setUserBotBalance('0.0000');
+    setErc20Balance('0.0000');
   };
 
   const checkWalletConnected = async () => {
@@ -104,10 +171,7 @@ export default function Home() {
   };
 
   const handleAddRecipient = () => {
-    if (recipients.length >= 3) {
-      alert('Maximum 3 recipients allowed per atomic transaction.');
-      return;
-    }
+    if (recipients.length >= 3) return;
     setRecipients((prev) => [
       ...prev,
       { id: Math.random().toString(36).substring(2), address: '', amount: '' },
@@ -115,6 +179,10 @@ export default function Home() {
   };
 
   const handleRemoveRecipient = (id: string) => {
+    if (recipients.length <= 1) {
+      setRecipients([{ id: '1', address: '', amount: '' }]);
+      return;
+    }
     setRecipients((prev) => prev.filter((r) => r.id !== id));
   };
 
@@ -124,65 +192,31 @@ export default function Home() {
     );
   };
 
-  const handleGenerateAI = () => {
-    if (!promptText.trim()) {
-      alert('Please enter a prompt or pick a template below!');
-      return;
-    }
-    const addrs = promptText.match(/0x[a-fA-F0-9]{40}/g) || [];
-    const nums = promptText.match(/\b\d+(\.\d+)?\b/g) || [];
-
-    if (addrs.length > 0) {
-      const newRows: RecipientRow[] = addrs.slice(0, 3).map((a, idx) => ({
-        id: Math.random().toString(36).substring(2),
-        address: a,
-        amount: nums[idx] || '10',
-      }));
-      setRecipients(newRows);
-      addLog(`AI Assistant parsed ${newRows.length} addresses from prompt`, 'info');
-    } else {
-      alert('AI Tip: Include 0x wallet addresses in your prompt or use template buttons!');
-    }
-  };
-
-  const handleApplyTemplate = (type: 'hackathon' | 'payroll' | 'airdrop') => {
+  const handleApplyPreset = (type: 'hackathon' | 'payroll' | 'airdrop') => {
     if (type === 'hackathon') {
-      setPromptText('Hackathon Prize Distribution: 50 BOT to Winner #1, 30 BOT to Winner #2, 20 BOT to Winner #3.');
       setRecipients([
-        { id: '1', address: '0x1111111111111111111111111111111111111111', amount: '50' },
-        { id: '2', address: '0x2222222222222222222222222222222222222222', amount: '30' },
-        { id: '3', address: '0x3333333333333333333333333333333333333333', amount: '20' },
+        { id: '1', address: '0x3248fd7fb3f66523d79d5f1c41f641db49b60fa5', amount: '1' },
+        { id: '2', address: '0x1111111111111111111111111111111111111111', amount: '0.5' },
+        { id: '3', address: '0x2222222222222222222222222222222222222222', amount: '0.2' },
       ]);
     } else if (type === 'payroll') {
-      setPromptText('DAO Monthly Payroll: Lead Dev 100 BOT, Moderator 50 BOT, Designer 50 BOT.');
       setRecipients([
-        { id: '1', address: '0x7777777777777777777777777777777777777777', amount: '100' },
-        { id: '2', address: '0x8888888888888888888888888888888888888888', amount: '50' },
-        { id: '3', address: '0x9999999999999999999999999999999999999999', amount: '50' },
+        { id: '1', address: '0x3248fd7fb3f66523d79d5f1c41f641db49b60fa5', amount: '2' },
+        { id: '2', address: '0x7777777777777777777777777777777777777777', amount: '1' },
       ]);
     } else if (type === 'airdrop') {
-      setPromptText('Community Reward Airdrop: Equal 25 BOT to 3 active contributors.');
       setRecipients([
-        { id: '1', address: '0xAAAA00000000000000000000000000000000AAAA', amount: '25' },
-        { id: '2', address: '0xBBBB00000000000000000000000000000000BBBB', amount: '25' },
-        { id: '3', address: '0xCCCC00000000000000000000000000000000CCCC', amount: '25' },
+        { id: '1', address: '0x3248fd7fb3f66523d79d5f1c41f641db49b60fa5', amount: '0.1' },
+        { id: '2', address: '0xAAAA00000000000000000000000000000000AAAA', amount: '0.1' },
       ]);
     }
   };
 
-  const totalAmount = recipients.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+  const activeRecipients = recipients.filter(
+    (r) => r.address.trim() !== '' || r.amount.trim() !== ''
+  );
 
-  // Verification calculations
-  const checks = {
-    recipientsCount: recipients.length > 0 && recipients.length <= 3,
-    noDuplicates:
-      recipients.length > 0 &&
-      new Set(recipients.map((r) => r.address.toLowerCase())).size === recipients.length,
-    noZeroAddress:
-      recipients.length > 0 &&
-      !recipients.some((r) => r.address === '0x0000000000000000000000000000000000000000' || !r.address),
-    validAmounts: recipients.length > 0 && !recipients.some((r) => (parseFloat(r.amount) || 0) <= 0),
-  };
+  const totalAmount = activeRecipients.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
 
   const handleExecute = async () => {
     if (!signer) {
@@ -190,32 +224,60 @@ export default function Home() {
       return;
     }
 
-    if (!Object.values(checks).every(Boolean)) {
-      alert('Please resolve all safety verification items before executing!');
+    if (activeRecipients.length === 0) {
+      alert('Please fill at least 1 recipient address and amount.');
+      return;
+    }
+
+    const invalidRecipient = activeRecipients.find(
+      (r) => !ethers.isAddress(r.address.trim()) || (parseFloat(r.amount) || 0) <= 0
+    );
+
+    if (invalidRecipient) {
+      alert('Please make sure all active recipient addresses are valid 0x... format and amounts are greater than 0.');
+      return;
+    }
+
+    const uniqueAddrs = new Set(activeRecipients.map((r) => r.address.toLowerCase().trim()));
+    if (uniqueAddrs.size !== activeRecipients.length) {
+      alert('Duplicate recipient addresses detected! Each recipient must be unique.');
       return;
     }
 
     setIsExecuting(true);
+    setStatusMsg('Broadcasting transaction to BOT Chain...');
     try {
       const contract = new ethers.Contract(CONTRACT_ADDRESS, MULTISEND_ABI, signer);
-      const addresses = recipients.map((r) => r.address.trim());
-      const amounts = recipients.map((r) => (parseFloat(r.amount) || 0).toString());
+      const addresses = activeRecipients.map((r) => r.address.trim());
+      const amounts = activeRecipients.map((r) => (parseFloat(r.amount) || 0).toString());
 
       if (isNativeMode) {
         const weiAmounts = amounts.map((a) => ethers.parseEther(a));
         const totalWei = ethers.parseEther(totalAmount.toString());
 
-        addLog(`Initiating native BOT multi-send (${totalAmount} BOT)...`, 'info');
-        const tx = await contract.multiSendNative(addresses, weiAmounts, { value: totalWei });
-        addLog(`Tx broadcasted: ${tx.hash.substring(0, 10)}...`, 'info', tx.hash);
+        let estimatedGas: bigint;
+        try {
+          estimatedGas = await contract.multiSendNative.estimateGas(addresses, weiAmounts, { value: totalWei });
+          estimatedGas = (estimatedGas * BigInt(120)) / BigInt(100);
+        } catch {
+          estimatedGas = BigInt(200000);
+        }
+
+        const tx = await contract.multiSendNative(addresses, weiAmounts, {
+          value: totalWei,
+          gasLimit: estimatedGas,
+        });
+        setStatusMsg(`Transaction sent: ${tx.hash.substring(0, 14)}... Confirming...`);
 
         const receipt = await tx.wait();
-        addLog(`🎉 Atomic Native BOT Distribution Confirmed!`, 'success', receipt.hash);
-        alert(`🎉 Success! Distributed ${totalAmount} BOT to ${recipients.length} recipients in 1 transaction!`);
+        setStatusMsg(`Distribution Confirmed! Tx: ${receipt.hash.substring(0, 14)}...`);
+        alert(`🎉 Success! Distributed ${totalAmount} BOT to ${activeRecipients.length} recipients in 1 transaction!`);
+        fetchUserNativeBalance();
       } else {
         if (!ethers.isAddress(tokenAddress)) {
-          alert('Please enter a valid ERC20 token address.');
+          alert('Please enter a valid ERC20 token contract address.');
           setIsExecuting(false);
+          setStatusMsg(null);
           return;
         }
 
@@ -223,17 +285,27 @@ export default function Home() {
         const decimals = await tokenContract.decimals();
         const rawAmounts = amounts.map((a) => ethers.parseUnits(a, decimals));
 
-        addLog(`Initiating ERC20 multi-send...`, 'info');
-        const tx = await contract.multiSendERC20(tokenAddress, addresses, rawAmounts);
-        addLog(`Tx broadcasted: ${tx.hash.substring(0, 10)}...`, 'info', tx.hash);
+        let estimatedGas: bigint;
+        try {
+          estimatedGas = await contract.multiSendERC20.estimateGas(tokenAddress, addresses, rawAmounts);
+          estimatedGas = (estimatedGas * BigInt(120)) / BigInt(100);
+        } catch {
+          estimatedGas = BigInt(250000);
+        }
+
+        const tx = await contract.multiSendERC20(tokenAddress, addresses, rawAmounts, {
+          gasLimit: estimatedGas,
+        });
+        setStatusMsg(`Transaction sent: ${tx.hash.substring(0, 14)}... Confirming...`);
 
         const receipt = await tx.wait();
-        addLog(`🎉 Atomic ERC20 Distribution Confirmed!`, 'success', receipt.hash);
+        setStatusMsg(`ERC20 Distribution Confirmed!`);
         alert(`🎉 Success! Distributed ERC20 Tokens!`);
+        fetchERC20Details(tokenAddress);
       }
     } catch (err: any) {
       console.error(err);
-      addLog(`❌ Transaction Error: ${err.reason || err.message}`, 'error');
+      setStatusMsg(`Transaction Error: ${err.reason || err.message}`);
       alert(`Transaction Failed: ${err.reason || err.message}`);
     } finally {
       setIsExecuting(false);
@@ -248,77 +320,90 @@ export default function Home() {
       const decimals = await tokenContract.decimals();
       const totalRaw = ethers.parseUnits(totalAmount.toString(), decimals);
 
-      addLog(`Approving ERC20 allowance for MultiSend contract...`, 'info');
-      const tx = await tokenContract.approve(CONTRACT_ADDRESS, totalRaw);
+      setStatusMsg('Approving ERC20 allowance...');
+      const tx = await tokenContract.approve(CONTRACT_ADDRESS, totalRaw, { gasLimit: BigInt(100000) });
       await tx.wait();
 
-      addLog(`✅ Allowance granted to MultiSend contract`, 'success');
-      alert('✅ ERC20 Token allowance approved!');
+      setStatusMsg('ERC20 Token allowance approved!');
+      alert('ERC20 Token allowance approved!');
     } catch (err: any) {
       console.error(err);
-      addLog(`❌ Approval error: ${err.message}`, 'error');
+      setStatusMsg(`Approve error: ${err.message}`);
     } finally {
       setIsApproving(false);
     }
   };
 
   return (
-    <div className="min-h-screen pb-16">
-      <Navbar userAddress={userAddress} isConnected={isConnected} onConnect={connectWallet} />
+    <div className="min-h-screen bg-white text-[#171717]">
+      <Navbar
+        userAddress={userAddress}
+        isConnected={isConnected}
+        onConnect={connectWallet}
+        onDisconnect={disconnectWallet}
+        activeTab={activeTab}
+        setActiveTab={handleSwitchTab}
+      />
 
-      <main className="max-w-7xl mx-auto px-6 pt-8">
-        <Banner />
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7">
-            <AIAssistant
-              promptText={promptText}
-              setPromptText={setPromptText}
-              onGenerate={handleGenerateAI}
-              onApplyTemplate={handleApplyTemplate}
-            />
-
-            <DistributionForm
-              isNativeMode={isNativeMode}
-              setIsNativeMode={setIsNativeMode}
-              tokenAddress={tokenAddress}
-              setTokenAddress={setTokenAddress}
-              recipients={recipients}
-              onAddRecipient={handleAddRecipient}
-              onRemoveRecipient={handleRemoveRecipient}
-              onUpdateRecipient={handleUpdateRecipient}
-            />
+      <main className="w-full">
+        {activeTab === 'landing' ? (
+          /* FULL WIDTH DISTINCT SECTIONS LANDING PAGE WITH PRODUCT SHOWCASE SECTION */
+          <div className="w-full">
+            <LandingHero onOpenApp={() => handleSwitchTab('app')} />
+            <ProductShowcaseSection onOpenApp={() => handleSwitchTab('app')} />
+            <ComparisonSection />
+            <FeaturesShowcase onOpenApp={() => handleSwitchTab('app')} />
+            <WorkflowSection onLaunchApp={() => handleSwitchTab('app')} />
+            <FAQSection />
+            <FaqAccordionSection />
+            <CtaBanner onLaunchApp={() => handleSwitchTab('app')} />
           </div>
-
-          <div className="lg:col-span-5">
-            <VerificationChecklist checks={checks} />
-
-            <ExecutionSummary
-              isNativeMode={isNativeMode}
-              totalRecipients={recipients.length}
-              totalAmount={totalAmount}
-              isExecuting={isExecuting}
-              isApproving={isApproving}
-              onExecute={handleExecute}
-              onApprove={handleApprove}
-              needsApproval={!isNativeMode}
-            />
-
-            <ActivityLog logs={logs} />
-          </div>
-        </div>
+        ) : (
+          /* ULTRA-MINIMALIST DAPP WORKSPACE VIEW WITH DYNAMIC SAVE/LOAD ROSTER SUPPORT */
+          <WorkspaceDashboard
+            isConnected={isConnected}
+            userAddress={userAddress}
+            userBotBalance={userBotBalance}
+            erc20Balance={erc20Balance}
+            erc20Symbol={erc20Symbol}
+            isNativeMode={isNativeMode}
+            setIsNativeMode={setIsNativeMode}
+            tokenAddress={tokenAddress}
+            setTokenAddress={setTokenAddress}
+            recipients={recipients}
+            onSetRecipients={setRecipients}
+            onAddRecipient={handleAddRecipient}
+            onRemoveRecipient={handleRemoveRecipient}
+            onUpdateRecipient={handleUpdateRecipient}
+            onApplyPreset={handleApplyPreset}
+            totalAmount={totalAmount}
+            isExecuting={isExecuting}
+            isApproving={isApproving}
+            statusMsg={statusMsg}
+            onExecute={handleExecute}
+            onApprove={handleApprove}
+            onConnectWallet={connectWallet}
+            onDisconnectWallet={disconnectWallet}
+          />
+        )}
       </main>
 
-      <footer className="mt-16 py-6 border-t border-white/10 text-center text-xs text-slate-500">
-        Built for <strong className="text-slate-300">BOT Chain Build Week Hackathon</strong> • Contract Deployed at{' '}
-        <a
-          href={`https://scan.bohr.life/address/${CONTRACT_ADDRESS}`}
-          target="_blank"
-          rel="noreferrer"
-          className="text-cyan-400 hover:underline font-mono"
-        >
-          {CONTRACT_ADDRESS}
-        </a>
+      {/* ULTRA-CLEAN ROUNDED RECTANGLE FLOATING CARD FOR MONKEY BOT */}
+      <button
+        onClick={() => setIsAiChatOpen(true)}
+        className="fixed bottom-6 right-6 z-40 h-12 pl-2 pr-4 rounded-2xl bg-[#09090B] text-white border border-[#27272A] shadow-2xl hover:shadow-3xl font-mono text-xs font-bold flex items-center gap-2.5 transition-all hover:scale-105 cursor-pointer"
+      >
+        <div className="w-8 h-8 rounded-xl bg-white overflow-hidden flex items-center justify-center shrink-0 shadow-xs">
+          <DotLottiePlayer src={CHATBOT_LOTTIE_URL} width="32px" height="32px" />
+        </div>
+        <span className="text-xs font-bold text-white">Monkey Bot</span>
+      </button>
+
+      {/* GEMINI RAG AI CHATBOT MODAL */}
+      <GeminiChatModal isOpen={isAiChatOpen} onClose={() => setIsAiChatOpen(false)} />
+
+      <footer className="mt-20 py-6 border-t border-black/[0.08] text-center text-xs text-neutral-400">
+        Built for <strong>BOT Chain Build Week Hackathon</strong>
       </footer>
     </div>
   );

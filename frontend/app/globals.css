@@ -1,53 +1,85 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-[#080C14] text-slate-100 font-sans min-h-screen antialiased selection:bg-cyan-500 selection:text-black;
+    @apply font-sans min-h-screen antialiased bg-white text-[#171717] selection:bg-[#171717] selection:text-white;
+    letter-spacing: -0.01em;
   }
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, #00F2FE 0%, #4FACFE 50%, #7928CA 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.vercel-card {
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.08), 0px 2px 4px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
 }
 
-.glass-panel {
-  background: rgba(24, 34, 54, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+.vercel-card-interactive {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-panel-glow {
-  border-color: rgba(0, 242, 254, 0.25);
-  box-shadow: 0 0 30px rgba(0, 242, 254, 0.12);
+.vercel-card-interactive:hover {
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.16), 0px 8px 16px rgba(0, 0, 0, 0.06);
 }
 
-.bg-glow-cyan {
-  position: absolute;
-  width: 450px;
-  height: 450px;
-  background: rgba(0, 242, 254, 0.12);
-  border-radius: 50%;
-  filter: blur(140px);
-  pointer-events: none;
-  z-index: 0;
+.vercel-button-primary {
+  background-color: #171717;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease;
 }
 
-.bg-glow-purple {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  background: rgba(121, 40, 202, 0.14);
-  border-radius: 50%;
-  filter: blur(160px);
-  pointer-events: none;
-  z-index: 0;
+.vercel-button-primary:hover {
+  background-color: #333333;
+  transform: translateY(-1px);
+}
+
+.vercel-button-secondary {
+  background-color: #ffffff;
+  color: #171717;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.08);
+  transition: all 0.15s ease;
+}
+
+.vercel-button-secondary:hover {
+  background-color: #fafafa;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.16);
+}
+
+.vercel-input {
+  background-color: #ffffff;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.08);
+  color: #171717;
+  border-radius: 8px;
+  outline: none;
+  transition: box-shadow 0.15s ease;
+}
+
+.vercel-input:focus {
+  box-shadow: 0px 0px 0px 1px #171717, 0px 0px 8px rgba(23, 23, 23, 0.15);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  background: #eaeaea;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #cccccc;
 }

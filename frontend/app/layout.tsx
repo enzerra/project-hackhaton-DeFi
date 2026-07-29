@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Inter } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'BOTFlow AI — Intelligent Asset Distribution Platform',
-  description: 'AI-powered atomic asset distribution platform for BOT Chain EVM. Fast, gas-optimized, 100% All-or-Nothing batch transfers.',
+  title: 'BOTFlow Protocol — Vercel Minimalist Asset Distribution',
+  description: 'Atomic, multi-recipient token distribution platform for BOT Chain EVM.',
 };
 
 export default function RootLayout({
@@ -12,10 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="relative min-h-screen bg-[#080C14] text-slate-100 antialiased overflow-x-hidden">
-        <div className="bg-glow-cyan top-[-100px] left-[-100px]" />
-        <div className="bg-glow-purple top-[300px] right-[-100px]" />
+    <html lang="en" className={cn("font-sans", inter.variable)}>
+      <body className="min-h-screen bg-white text-[#171717] antialiased selection:bg-[#171717] selection:text-white">
         {children}
       </body>
     </html>
