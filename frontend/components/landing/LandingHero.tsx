@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Zap, ExternalLink, Activity } from 'lucide-react';
-import { CONTRACT_ADDRESS } from '../../lib/constants';
+import { CONTRACT_ADDRESS } from '@/lib/constants';
 import { TypewriterHeadline } from './TypewriterHeadline';
 import { Isometric3DCard } from './Isometric3DCard';
 

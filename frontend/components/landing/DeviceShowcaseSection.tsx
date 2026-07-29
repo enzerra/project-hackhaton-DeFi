@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Zap, ShieldCheck, CheckCircle2, ArrowRight, Sparkles, Layers, Wallet, Upload } from 'lucide-react';
-import { CONTRACT_ADDRESS } from '../../lib/constants';
+import { CONTRACT_ADDRESS } from '@/lib/constants';
 
 interface DeviceShowcaseSectionProps {
   onOpenApp: () => void;

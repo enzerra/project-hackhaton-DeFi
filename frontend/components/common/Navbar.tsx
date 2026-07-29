@@ -9,8 +9,8 @@ interface NavbarProps {
   isConnected: boolean;
   onConnect: () => void;
   onDisconnect: () => void;
-  activeTab: 'landing' | 'app';
-  setActiveTab: (tab: 'landing' | 'app') => void;
+  activeTab: 'landing' | 'app' | 'splitbill';
+  setActiveTab: (tab: 'landing' | 'app' | 'splitbill') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -61,7 +61,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 : 'text-[#71717A] hover:text-[#09090B]'
             }`}
           >
-            Launch DApp Workspace
+            MultiSend Engine
+          </button>
+          <button
+            onClick={() => setActiveTab('splitbill')}
+            className={`px-4 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'splitbill'
+                ? 'bg-emerald-500 text-black font-extrabold shadow-md'
+                : 'text-[#71717A] hover:text-[#09090B]'
+            }`}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Split Bill & PayLink</span>
           </button>
         </div>
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Wallet, Zap, Plus, Trash2, Upload, Save, FolderOpen, Check, LogOut } from 'lucide-react';
-import { CONTRACT_ADDRESS } from '../../lib/constants';
+import { CONTRACT_ADDRESS } from '@/lib/constants';
 
 interface RecipientRow {
   id: string;

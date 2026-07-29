@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: 'BOTFlow Protocol — Vercel Minimalist Asset Distribution',
@@ -16,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn("font-sans", inter.variable)}>
+    <html lang="en" className="font-sans">
       <body className="min-h-screen bg-white text-[#171717] antialiased selection:bg-[#171717] selection:text-white">
         {children}
       </body>

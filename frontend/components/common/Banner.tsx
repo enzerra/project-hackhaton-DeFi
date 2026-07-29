@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ShieldCheck, Zap, ArrowUpRight } from 'lucide-react';
-import { CONTRACT_ADDRESS } from '../../lib/constants';
+import { CONTRACT_ADDRESS } from '@/lib/constants';
 
 export const Banner: React.FC = () => {
   return (

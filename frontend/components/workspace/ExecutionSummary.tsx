@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ArrowRight, Zap, ExternalLink } from 'lucide-react';
-import { CONTRACT_ADDRESS } from '../../lib/constants';
+import { CONTRACT_ADDRESS } from '@/lib/constants';
 
 interface ExecutionSummaryProps {
   isNativeMode: boolean;

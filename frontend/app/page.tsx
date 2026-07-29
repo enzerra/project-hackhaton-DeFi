@@ -16,11 +16,18 @@ import {
 import { WorkspaceDashboard } from '../components/workspace';
 import { GeminiChatModal } from '../components/ai';
 import {
+  CreatePayLinkModal,
+  PayLinkPaymentCard,
+  SplitBillTracker,
+  PaymentNotificationToast,
+} from '../components/splitbill';
+import { getPayLinkById, PayLinkItem } from '../lib/paylinkStore';
+import {
   CONTRACT_ADDRESS,
   BOTCHAIN_TESTNET_PARAMS,
   MULTISEND_ABI,
   ERC20_ABI,
-} from '../lib/constants';
+} from '@/lib/constants';
 
 interface RecipientRow {
   id: string;
@@ -31,8 +38,10 @@ interface RecipientRow {
 const CHATBOT_LOTTIE_URL = 'https://lottie.host/889b0dba-90ad-4450-8617-1affbcb85fde/9LxEKBVZag.lottie';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'landing' | 'app'>('landing');
+  const [activeTab, setActiveTab] = useState<'landing' | 'app' | 'splitbill'>('landing');
   const [isAiChatOpen, setIsAiChatOpen] = useState<boolean>(false);
+  const [isCreatePayLinkOpen, setIsCreatePayLinkOpen] = useState<boolean>(false);
+  const [activePayLink, setActivePayLink] = useState<PayLinkItem | null>(null);
 
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [signer, setSigner] = useState<ethers.Signer | null>(null);
@@ -58,6 +67,19 @@ export default function Home() {
 
   useEffect(() => {
     checkWalletConnected();
+
+    // Check for PayLink query param in URL
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const payId = params.get('payId');
+      if (payId) {
+        const found = getPayLinkById(payId);
+        if (found) {
+          setActivePayLink(found);
+          setActiveTab('splitbill');
+        }
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -72,7 +94,7 @@ export default function Home() {
     }
   }, [isConnected, signer, isNativeMode, tokenAddress]);
 
-  const handleSwitchTab = (tab: 'landing' | 'app') => {
+  const handleSwitchTab = (tab: 'landing' | 'app' | 'splitbill') => {
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -358,6 +380,30 @@ export default function Home() {
             <FaqAccordionSection />
             <CtaBanner onLaunchApp={() => handleSwitchTab('app')} />
           </div>
+        ) : activeTab === 'splitbill' ? (
+          /* SPLIT BILL & PAYLINK SUITE */
+          <div className="w-full bg-[#050505] min-h-[calc(100vh-4rem)] py-8">
+            {activePayLink ? (
+              <PayLinkPaymentCard
+                payLink={activePayLink}
+                userAddress={userAddress}
+                isConnected={isConnected}
+                onConnectWallet={connectWallet}
+                signer={signer}
+                onPaymentSuccess={() => {
+                  fetchUserNativeBalance();
+                  if (activePayLink) {
+                    setActivePayLink({ ...activePayLink, status: 'PAID' });
+                  }
+                }}
+              />
+            ) : (
+              <SplitBillTracker
+                userAddress={userAddress}
+                onOpenCreateModal={() => setIsCreatePayLinkOpen(true)}
+              />
+            )}
+          </div>
         ) : (
           /* ULTRA-MINIMALIST DAPP WORKSPACE VIEW WITH DYNAMIC SAVE/LOAD ROSTER SUPPORT */
           <WorkspaceDashboard
@@ -387,6 +433,19 @@ export default function Home() {
           />
         )}
       </main>
+
+      {/* CREATE PAYLINK MODAL */}
+      <CreatePayLinkModal
+        isOpen={isCreatePayLinkOpen}
+        onClose={() => setIsCreatePayLinkOpen(false)}
+        userAddress={userAddress}
+        onLinkCreated={(link) => {
+          setActivePayLink(null);
+        }}
+      />
+
+      {/* REAL-TIME IN-APP TOAST NOTIFICATION */}
+      <PaymentNotificationToast />
 
       {/* ULTRA-CLEAN ROUNDED RECTANGLE FLOATING CARD FOR MONKEY BOT */}
       <button
