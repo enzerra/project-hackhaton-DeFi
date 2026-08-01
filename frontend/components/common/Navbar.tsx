@@ -65,13 +65,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('splitbill')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-4 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
               activeTab === 'splitbill'
-                ? 'bg-emerald-500 text-black font-extrabold shadow-md'
+                ? 'bg-[#09090B] text-white shadow-md'
                 : 'text-[#71717A] hover:text-[#09090B]'
             }`}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span>Split Bill & PayLink</span>
           </button>
         </div>
@@ -84,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setShowWalletMenu(!showWalletMenu)}
                 className="px-4 py-2 text-xs font-bold font-mono flex items-center gap-2 bg-[#09090B] text-white rounded-xl hover:bg-[#27272A] cursor-pointer shadow-md"
               >
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-white" />
                 <span>{userAddress.substring(0, 6)}...{userAddress.substring(38)}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
               </button>

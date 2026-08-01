@@ -13,6 +13,8 @@ export interface PayLinkItem {
   paidAt: number | null;
 }
 
+const STORAGE_KEY = 'botflow_paylink_items';
+
 const DEFAULT_SAMPLE_PAYLINKS: PayLinkItem[] = [
   {
     id: 'PAY-DEMO1',

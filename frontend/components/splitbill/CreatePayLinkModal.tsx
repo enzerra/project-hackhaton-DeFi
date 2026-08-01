@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Copy, Check, QrCode, Share2, Sparkles, Zap, ArrowRight } from 'lucide-react';
+import { X, Copy, Check, Share2, Zap, ArrowRight, Wallet } from 'lucide-react';
 import { createPayLink, generatePayLinkUrl, PayLinkItem } from '@/lib/paylinkStore';
 
 interface CreatePayLinkModalProps {
@@ -71,7 +71,7 @@ export const CreatePayLinkModal: React.FC<CreatePayLinkModalProps> = ({
     if (!generatedLink) return;
     const url = generatePayLinkUrl(generatedLink.id);
     const text = encodeURIComponent(
-      `📌 BOTFlow PayLink: "${generatedLink.title}"\n💰 Total Tagihan: ${generatedLink.amount} ${generatedLink.tokenSymbol}\n\nKlik link ini untuk langsung bayar 1-click:\n${url}`
+      `📌 BOTFlow PayLink: "${generatedLink.title}"\n💰 Amount: ${generatedLink.amount} ${generatedLink.tokenSymbol}\n\nPay in 1-click:\n${url}`
     );
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
@@ -93,202 +93,193 @@ export const CreatePayLinkModal: React.FC<CreatePayLinkModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 font-sans">
       <div className="relative w-full max-w-lg overflow-hidden bg-[#09090B] text-white border border-[#27272A] rounded-2xl shadow-2xl">
-        {/* Header */}
+        {/* HEADER */}
         <div className="flex items-center justify-between p-5 border-b border-[#27272A] bg-[#121215]">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-              <Zap className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-bold text-xs shadow-xs">
+              ⚡
             </div>
             <div>
-              <h3 className="text-base font-semibold text-white">Create PayLink / Split Bill</h3>
-              <p className="text-xs text-neutral-400">Tagih pembayaran tanpa perlu minta alamat wallet pembayar</p>
+              <h3 className="text-sm font-extrabold text-white tracking-tight">Create Web3 PayLink</h3>
+              <p className="text-[11px] font-mono text-neutral-400">Generate 1-click payment request links</p>
             </div>
           </div>
           <button
             onClick={handleResetModal}
-            className="p-2 rounded-xl hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6">
+        {/* MODAL BODY */}
+        <div className="p-6 space-y-5 text-left">
           {!generatedLink ? (
             <form onSubmit={handleCreate} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-neutral-300 mb-1.5">
-                  Catatan / Judul Tagihan
+              {/* ASSET TYPE SWITCHER */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono font-bold text-neutral-300 uppercase tracking-wider block">
+                  Asset Type
+                </label>
+                <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#18181B] border border-[#27272A] text-xs font-mono">
+                  <button
+                    type="button"
+                    onClick={() => setIsNative(true)}
+                    className={`py-2 rounded-lg font-bold transition-all cursor-pointer ${
+                      isNative ? 'bg-white text-black shadow-xs' : 'text-neutral-400 hover:text-white'
+                    }`}
+                  >
+                    Native BOT Token
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsNative(false)}
+                    className={`py-2 rounded-lg font-bold transition-all cursor-pointer ${
+                      !isNative ? 'bg-white text-black shadow-xs' : 'text-neutral-400 hover:text-white'
+                    }`}
+                  >
+                    ERC20 Token
+                  </button>
+                </div>
+              </div>
+
+              {/* TITLE INPUT */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono font-bold text-neutral-300 uppercase tracking-wider block">
+                  Bill Title / Purpose
                 </label>
                 <input
                   type="text"
-                  placeholder="Contoh: Makan Bareng Hackathon, Patungan Server"
+                  placeholder="e.g. Hackathon Coffee & Lunch Split"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm bg-[#18181B] border border-[#27272A] rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 transition-colors"
-                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#18181B] border border-[#27272A] text-white text-xs font-sans placeholder-neutral-500 focus:outline-none focus:border-white transition-colors"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-neutral-300 mb-1.5">
-                    Nominal Tagihan
-                  </label>
+              {/* AMOUNT INPUT */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono font-bold text-neutral-300 uppercase tracking-wider block">
+                  Amount Requested ({isNative ? 'BOT' : tokenSymbol})
+                </label>
+                <div className="relative">
                   <input
                     type="number"
                     step="any"
                     placeholder="0.00"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-sm bg-[#18181B] border border-[#27272A] rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 transition-colors"
-                    required
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#18181B] border border-[#27272A] text-white text-sm font-mono placeholder-neutral-500 focus:outline-none focus:border-white transition-colors pr-16"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-neutral-300 mb-1.5">
-                    Jenis Token
-                  </label>
-                  <div className="flex bg-[#18181B] border border-[#27272A] rounded-xl p-1">
-                    <button
-                      type="button"
-                      onClick={() => setIsNative(true)}
-                      className={`flex-1 py-1.5 text-xs font-medium rounded-lg transition-all ${
-                        isNative ? 'bg-emerald-500 text-black font-semibold' : 'text-neutral-400 hover:text-white'
-                      }`}
-                    >
-                      BOT Native
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsNative(false)}
-                      className={`flex-1 py-1.5 text-xs font-medium rounded-lg transition-all ${
-                        !isNative ? 'bg-emerald-500 text-black font-semibold' : 'text-neutral-400 hover:text-white'
-                      }`}
-                    >
-                      ERC20
-                    </button>
-                  </div>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-neutral-400">
+                    {isNative ? 'BOT' : tokenSymbol}
+                  </span>
                 </div>
               </div>
 
               {!isNative && (
-                <div className="space-y-3 p-3.5 rounded-xl bg-[#141417] border border-[#27272A]">
-                  <div>
-                    <label className="block text-[11px] text-neutral-400 mb-1">Smart Contract Address ERC20</label>
+                <div className="space-y-3 p-3 rounded-xl bg-[#121215] border border-[#27272A]">
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-mono text-neutral-400 block">ERC20 Contract Address</label>
                     <input
                       type="text"
                       placeholder="0x..."
                       value={tokenAddress}
                       onChange={(e) => setTokenAddress(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-[#18181B] border border-[#27272A] rounded-lg text-white font-mono"
+                      className="w-full px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-white text-xs font-mono placeholder-neutral-600 focus:outline-none focus:border-white"
                     />
                   </div>
-                  <div>
-                    <label className="block text-[11px] text-neutral-400 mb-1">Simbol Token</label>
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-mono text-neutral-400 block">Token Symbol</label>
                     <input
                       type="text"
-                      placeholder="USDT / USDC"
+                      placeholder="USDT"
                       value={tokenSymbol}
                       onChange={(e) => setTokenSymbol(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-[#18181B] border border-[#27272A] rounded-lg text-white font-mono"
+                      className="w-full px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-white text-xs font-mono placeholder-neutral-600 focus:outline-none focus:border-white"
                     />
                   </div>
                 </div>
               )}
 
-              <div className="p-3 rounded-xl bg-[#121215] border border-[#27272A] text-xs space-y-1">
-                <span className="text-neutral-400">Penerima Dana (Wallet Anda):</span>
-                <p className="font-mono text-emerald-400 font-medium truncate">
-                  {userAddress || 'Belum Terkoneksi'}
-                </p>
+              {/* PAYEE RECIPIENT DISPLAY */}
+              <div className="p-3 rounded-xl bg-[#121215] border border-[#27272A] text-xs font-mono text-neutral-400 flex justify-between items-center">
+                <span>Recipient (Payee):</span>
+                <span className="text-white font-bold truncate max-w-[200px]">
+                  {userAddress ? `${userAddress.substring(0, 8)}...${userAddress.substring(36)}` : 'Wallet Not Connected'}
+                </span>
               </div>
 
+              {/* SUBMIT BUTTON */}
               <button
                 type="submit"
                 disabled={!userAddress}
-                className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-black font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer"
+                className="w-full py-3 rounded-xl bg-white text-black font-extrabold text-xs flex items-center justify-center gap-2 hover:bg-neutral-200 transition-all cursor-pointer disabled:opacity-50 shadow-md"
               >
                 <span>Generate PayLink</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 text-black" />
               </button>
             </form>
           ) : (
-            /* Success & Share View */
-            <div className="space-y-5 text-center">
-              <div className="inline-flex p-3 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mb-1">
-                <Sparkles className="w-8 h-8" />
-              </div>
-              <div>
-                <h4 className="text-lg font-bold text-white">PayLink Berhasil Dibuat! 🎉</h4>
-                <p className="text-xs text-neutral-400 mt-1">
-                  Kirim link ini ke teman Anda. Mereka tinggal membuka link dan klik bayar 1-click.
+            /* SUCCESS GENERATED PAYLINK VIEW */
+            <div className="space-y-5">
+              <div className="text-center space-y-2 p-4 rounded-xl bg-[#121215] border border-[#27272A]">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                  <Check className="w-5 h-5" />
+                </div>
+                <h4 className="text-base font-bold text-white">PayLink Created Successfully!</h4>
+                <p className="text-xs font-mono text-neutral-400">
+                  {generatedLink.title} — <strong className="text-white">{generatedLink.amount} {generatedLink.tokenSymbol}</strong>
                 </p>
               </div>
 
-              {/* Bill Details Preview */}
-              <div className="p-4 rounded-xl bg-[#141417] border border-[#27272A] text-left space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-neutral-400">Judul:</span>
-                  <span className="font-semibold text-white">{generatedLink.title}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-neutral-400">Jumlah Tagihan:</span>
-                  <span className="font-bold text-emerald-400 text-sm">
-                    {generatedLink.amount} {generatedLink.tokenSymbol}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-neutral-400">Penerima Tagihan:</span>
-                  <span className="font-mono text-neutral-300 text-[11px]">
-                    {generatedLink.payeeAddress.substring(0, 8)}...{generatedLink.payeeAddress.substring(36)}
-                  </span>
+              {/* URL LINK BOX */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block">
+                  Shareable PayLink URL
+                </label>
+                <div className="flex items-center gap-2 p-2 rounded-xl bg-[#18181B] border border-[#27272A]">
+                  <input
+                    type="text"
+                    readOnly
+                    value={generatePayLinkUrl(generatedLink.id)}
+                    className="w-full bg-transparent text-xs font-mono text-neutral-300 focus:outline-none px-2 select-all"
+                  />
+                  <button
+                    onClick={handleCopy}
+                    className="px-3 py-1.5 rounded-lg bg-white text-black font-bold text-xs flex items-center gap-1 hover:bg-neutral-200 transition-all shrink-0 cursor-pointer"
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5 text-black" /> : <Copy className="w-3.5 h-3.5 text-black" />}
+                    <span>{copied ? 'Copied' : 'Copy'}</span>
+                  </button>
                 </div>
               </div>
 
-              {/* URL & Copy Box */}
-              <div className="flex items-center gap-2 p-2 bg-[#18181B] border border-[#27272A] rounded-xl">
-                <input
-                  type="text"
-                  readOnly
-                  value={generatePayLinkUrl(generatedLink.id)}
-                  className="flex-1 px-2 text-xs bg-transparent text-neutral-300 font-mono focus:outline-none truncate"
-                />
-                <button
-                  onClick={handleCopy}
-                  className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copied ? 'Tercopy!' : 'Copy'}</span>
-                </button>
-              </div>
-
-              {/* Social Share Buttons */}
-              <div className="grid grid-cols-2 gap-3 pt-1">
+              {/* SOCIAL SHARE BUTTONS */}
+              <div className="grid grid-cols-2 gap-2 text-xs font-bold">
                 <button
                   onClick={shareToWhatsapp}
-                  className="py-2.5 px-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  className="py-2.5 px-3 rounded-xl bg-[#18181B] border border-[#27272A] text-white hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <Share2 className="w-4 h-4" />
-                  <span>Kirim via WhatsApp</span>
+                  <Share2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Share WhatsApp</span>
                 </button>
                 <button
                   onClick={shareToTelegram}
-                  className="py-2.5 px-3 bg-[#229ED9]/10 hover:bg-[#229ED9]/20 border border-[#229ED9]/30 text-[#229ED9] text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  className="py-2.5 px-3 rounded-xl bg-[#18181B] border border-[#27272A] text-white hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <Share2 className="w-4 h-4" />
-                  <span>Kirim via Telegram</span>
+                  <Share2 className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Share Telegram</span>
                 </button>
               </div>
 
               <button
                 onClick={handleResetModal}
-                className="w-full py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-medium rounded-xl transition-colors mt-2 cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-neutral-800 text-white font-bold text-xs hover:bg-neutral-700 transition-colors cursor-pointer"
               >
-                Selesai / Buat Tagihan Lain
+                Close Window
               </button>
             </div>
           )}

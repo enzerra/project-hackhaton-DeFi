@@ -382,7 +382,7 @@ export default function Home() {
           </div>
         ) : activeTab === 'splitbill' ? (
           /* SPLIT BILL & PAYLINK SUITE */
-          <div className="w-full bg-[#050505] min-h-[calc(100vh-4rem)] py-8">
+          <div className="w-full bg-white min-h-[calc(100vh-4rem)] py-8">
             {activePayLink ? (
               <PayLinkPaymentCard
                 payLink={activePayLink}
