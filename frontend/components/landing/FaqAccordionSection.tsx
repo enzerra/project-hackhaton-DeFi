@@ -22,8 +22,8 @@ export const FaqAccordionSection: React.FC = () => {
     },
     {
       q: 'Is the Smart Contract verified on BOT Chain Testnet?',
-      a: 'Yes! BOTFlow Protocol is deployed live on BOT Chain Testnet (Chain ID 968) at contract address 0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9 with 100% verified source code on scan.bohr.life.',
-      code: 'Contract Address: 0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9',
+      a: 'Yes! BOTFlow Protocol is deployed live on BOT Chain Testnet (Chain ID 968) at contract address 0x76a5A3a1eC8AA32d7Fc7BD7D4Cd9c779a59Ef881 with 100% verified source code on scan.bohr.life.',
+      code: 'Contract Address: 0x76a5A3a1eC8AA32d7Fc7BD7D4Cd9c779a59Ef881',
     },
     {
       q: 'Does it support ERC20 tokens as well as Native BOT?',

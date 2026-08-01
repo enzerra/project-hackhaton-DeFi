@@ -45,7 +45,7 @@ COMPLETE DEEP PROJECT RAG KNOWLEDGE BASE:
    - Chain ID: 968 (0x3C8 in hex)
    - RPC URL: https://rpc.bohr.life
    - Explorer URL: https://scan.bohr.life/
-   - Contract Address: 0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9 (100% Verified Source Code)
+   - Contract Address: 0x76a5A3a1eC8AA32d7Fc7BD7D4Cd9c779a59Ef881 (100% Verified Source Code)
    - Smart Contract Language: Solidity v0.8.20 (MultiSend.sol)
    - Testing Suite: Tested with Foundry (14/14 Unit Tests PASS with 100% line coverage and invariant checks).
 
@@ -177,7 +177,7 @@ export async function POST(req: NextRequest) {
       lowerMsg.includes('contract') || lowerMsg.includes('alamat') || lowerMsg.includes('address') ||
       lowerMsg.includes('chain') || lowerMsg.includes('network') || lowerMsg.includes('rpc') || lowerMsg.includes('explorer') || lowerMsg.includes('bohr')
     ) {
-      fallbackReply = 'Berikut detail Spesifikasi Smart Contract resmi BOTFlow:\n\n- **Network**: BOT Chain Testnet (Chain ID 968) / Mainnet Ready\n- **RPC**: `https://rpc.bohr.life`\n- **Contract Address**: `0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9`\n- **Status**: 100% Verified Source Code & 14/14 Foundry Tests PASS.';
+      fallbackReply = 'Berikut detail Spesifikasi Smart Contract resmi BOTFlow:\n\n- **Network**: BOT Chain Testnet (Chain ID 968) / Mainnet Ready\n- **RPC**: `https://rpc.bohr.life`\n- **Contract Address**: `0x76a5A3a1eC8AA32d7Fc7BD7D4Cd9c779a59Ef881`\n- **Status**: 100% Verified Source Code & 14/14 Foundry Tests PASS.';
     }
     // 7. CORE FOUNDERS & TEAM
     else if (
