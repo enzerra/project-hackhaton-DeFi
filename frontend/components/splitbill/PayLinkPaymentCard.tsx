@@ -45,14 +45,17 @@ export const PayLinkPaymentCard: React.FC<PayLinkPaymentCardProps> = ({
     try {
       let txHash = '';
       if (payLink.isNative) {
-        // Send Native BOT token directly to Payee
+        // Route payment through BOTFlow MultiSend Smart Contract
         const weiAmount = ethers.parseEther(payLink.amount);
-        const tx = await signer.sendTransaction({
-          to: payLink.payeeAddress,
-          value: weiAmount,
-        });
+        const multiSendContract = new ethers.Contract(CONTRACT_ADDRESS, MULTISEND_ABI, signer);
 
-        setStatusMsg(`Transaction sent: ${tx.hash.substring(0, 14)}... Confirming...`);
+        const tx = await multiSendContract.multiSendNative(
+          [payLink.payeeAddress],
+          [weiAmount],
+          { value: weiAmount }
+        );
+
+        setStatusMsg(`On-chain transaction sent to Smart Contract (${tx.hash.substring(0, 14)}...): Confirming...`);
         const receipt = await tx.wait();
         txHash = receipt ? receipt.hash : tx.hash;
       } else {

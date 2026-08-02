@@ -88,11 +88,58 @@ export default function Home() {
     }
   }, [isConnected, provider, userAddress]);
 
+  // Auto-connect if wallet is already unlocked/authorized, and listen to account/chain changes
   useEffect(() => {
-    if (isConnected && signer && !isNativeMode && ethers.isAddress(tokenAddress)) {
-      fetchERC20Details(tokenAddress);
+    if (typeof window === 'undefined' || !(window as any).ethereum) return;
+    const eth = (window as any).ethereum;
+
+    const checkExistingConnection = async () => {
+      try {
+        const accounts: string[] = await eth.request({ method: 'eth_accounts' });
+        if (accounts && accounts.length > 0) {
+          const browserProvider = new ethers.BrowserProvider(eth);
+          const userSigner = await browserProvider.getSigner();
+          const addr = accounts[0];
+
+          setProvider(browserProvider);
+          setSigner(userSigner);
+          setUserAddress(addr);
+          setIsConnected(true);
+
+          const bal = await browserProvider.getBalance(addr);
+          setUserBotBalance(parseFloat(ethers.formatEther(bal)).toFixed(4));
+        }
+      } catch (err) {
+        console.warn('Auto connection check error:', err);
+      }
+    };
+
+    checkExistingConnection();
+
+    const handleAccountsChanged = (accounts: string[]) => {
+      if (!accounts || accounts.length === 0) {
+        disconnectWallet();
+      } else {
+        checkExistingConnection();
+      }
+    };
+
+    const handleChainChanged = () => {
+      window.location.reload();
+    };
+
+    if (eth.on) {
+      eth.on('accountsChanged', handleAccountsChanged);
+      eth.on('chainChanged', handleChainChanged);
     }
-  }, [isConnected, signer, isNativeMode, tokenAddress]);
+
+    return () => {
+      if (eth.removeListener) {
+        eth.removeListener('accountsChanged', handleAccountsChanged);
+        eth.removeListener('chainChanged', handleChainChanged);
+      }
+    };
+  }, []);
 
   const handleSwitchTab = (tab: 'landing' | 'app' | 'splitbill') => {
     setActiveTab(tab);
@@ -133,16 +180,34 @@ export default function Home() {
 
   const connectWallet = async () => {
     if (typeof window === 'undefined' || !(window as any).ethereum) {
-      alert('MetaMask extension is not installed!');
+      alert('MetaMask extension is not installed! Please install MetaMask to use BOTFlow AI.');
       return;
     }
 
     try {
       const eth = (window as any).ethereum;
+      
+      let accounts: string[] = [];
+      try {
+        accounts = await eth.request({ method: 'eth_requestAccounts' });
+      } catch (reqErr: any) {
+        if (reqErr.code === 4001) {
+          alert('Wallet connection request was rejected.');
+          return;
+        } else if (reqErr.code === -32002) {
+          alert('MetaMask connection request is already pending. Please check your MetaMask extension popup.');
+          return;
+        }
+        console.warn('eth_requestAccounts error:', reqErr);
+      }
+
+      if (!accounts || accounts.length === 0) {
+        return;
+      }
+
       const browserProvider = new ethers.BrowserProvider(eth);
-      await browserProvider.send('eth_requestAccounts', []);
       const userSigner = await browserProvider.getSigner();
-      const addr = await userSigner.getAddress();
+      const addr = accounts[0];
 
       const network = await browserProvider.getNetwork();
       if (Number(network.chainId) !== 968) {
@@ -153,10 +218,14 @@ export default function Home() {
           });
         } catch (switchError: any) {
           if (switchError.code === 4902) {
-            await eth.request({
-              method: 'wallet_addEthereumChain',
-              params: [BOTCHAIN_TESTNET_PARAMS],
-            });
+            try {
+              await eth.request({
+                method: 'wallet_addEthereumChain',
+                params: [BOTCHAIN_TESTNET_PARAMS],
+              });
+            } catch (addErr) {
+              console.warn('Failed to add BOT Chain testnet:', addErr);
+            }
           }
         }
       }
@@ -169,7 +238,7 @@ export default function Home() {
       const bal = await browserProvider.getBalance(addr);
       setUserBotBalance(parseFloat(ethers.formatEther(bal)).toFixed(4));
     } catch (err: any) {
-      console.error(err);
+      console.error('Wallet connection error caught:', err);
     }
   };
 
