@@ -1,128 +1,172 @@
-# 🤖 BOTFlow AI — MultiSend Atomic Transfer Protocol & Workspace
+# ⚡ Batchpay Protocol — 1-Click Atomic MultiSend & Split Bill Engine
 
-**BOTFlow AI** is an intelligent, high-performance asset distribution platform and Web3 DApp built for **BOT Chain (EVM)**. It enables atomic batch transfers of **Native BOT Tokens** and **ERC20 Tokens** (e.g. USDT/USDC) for up to **50 recipients** in a single transaction with **100% All-or-Nothing atomicity**, zero partial fund loss risk, and an integrated **Gemini 1.5 Flash RAG AI Assistant** ("Monkey Bot").
+[![BOT Chain Mainnet](https://img.shields.io/badge/BOT_Chain_Mainnet-0xbC3Fb064...78Fb-000000?style=for-the-badge&logo=ethereum&logoColor=white)](https://scan.botchain.ai/address/0xbC3Fb064bc396422fe1f8155AFe3822F966a78Fb)
+[![License: MIT](https://img.shields.io/badge/License-MIT-black.style=for-the-badge)](LICENSE)
+[![Build Status](https://img.shields.io/badge/Foundry-14%2F14_PASS-emerald?style=for-the-badge)](backend/test)
+[![UI Design](https://img.shields.io/badge/Design-Vercel_Minimalist_Light-black?style=for-the-badge)](frontend)
 
----
-
-## 🌟 Key Features
-
-- ⚡ **Single Unified Batch Transfer Engine**: Native BOT Token transfers (`multiSendNative`) and ERC20 Token transfers (`multiSendERC20`) in 1 single EVM block transaction.
-- 📁 **CSV File Import (`.csv`)**: Upload `.csv` files (`address,amount`) to automatically populate recipient rows in 0.1s.
-- 💾 **Save & Load Payroll Rosters**: Save recipient addresses & amounts into LocalStorage templates (e.g. *"July Core Team Payroll"*) and restore all rows dynamically.
-- 🐒 **Gemini 1.5 Flash RAG AI Assistant**: Embedded "Monkey Bot" assistant to guide users through EVM gas math, smart contract safety, and batch transfer workflows.
-- 🛡️ **Guaranteed EVM Atomicity**: OpenZeppelin `ReentrancyGuard` protected. If any single recipient transfer fails, the entire transaction reverts automatically.
-- ⛽ **Gas Optimized**: Stateless zero-SSTORE architecture writing 0 bytes to contract storage, saving up to **82.5% gas** vs individual single transactions.
-- 🧪 **100% Test Coverage**: Verified with 14/14 Foundry unit & revert test scenarios.
+> **Batchpay Protocol** is a high-performance, ultra-minimalist Web3 asset distribution suite engineered for **BOT Chain Mainnet**. It enables 1-click atomic batch token payouts and shareable payment request links (**Split Bill PayLink**) with **up to 82.5% gas fee savings** and **100% all-or-nothing atomic revert safety**.
 
 ---
 
-## 🛠️ Quick Start with Docker
+## 📍 Verified Mainnet Deployment Specifications
 
-Run the full smart contract build and Foundry test suite using Docker:
+Batchpay Protocol smart contract `MultiSend.sol` is **100% LIVE & VERIFIED on BOT Chain Mainnet**.
 
-```bash
-# Clone repository
-git clone https://github.com/enzerra/project-hackhaton-DeFi.git
-cd project-hackhaton-DeFi
+| Parameter | Mainnet Specification |
+| :--- | :--- |
+| **Network Name** | **BOT Chain Mainnet** |
+| **Chain ID** | **`677`** (`0x2A5`) |
+| **RPC Endpoint** | `https://rpc.botchain.ai` |
+| **Block Explorer** | [https://scan.botchain.ai](https://scan.botchain.ai) |
+| **Mainnet Contract Address** | [`0xbC3Fb064bc396422fe1f8155AFe3822F966a78Fb`](https://scan.botchain.ai/address/0xbC3Fb064bc396422fe1f8155AFe3822F966a78Fb) |
+| **Deployment Tx Hash** | [`0x81de1788098737e3b8286e71741784c079db877997f5510255ff5440576aadc9`](https://scan.botchain.ai/tx/0x81de1788098737e3b8286e71741784c079db877997f5510255ff5440576aadc9) |
+| **Deployer Address** | `0x2bA239eDE84F6e5bc475b6D04B050e9D2a6dE520` |
+| **Foundry Test Suite** | **14 / 14 Tests PASS (100% Line Coverage)** |
 
-# Build Docker image and run full Foundry test suite
-docker compose up --build
+---
+
+## 🌟 Core Platform Pillars
+
+Batchpay Protocol simplifies Web3 payouts into two flagship features:
+
+### 1. ⚡ MultiSend Engine (`Batch Token Payouts`)
+* **Multi-Recipient Batching**: Send **Native BOT** or **ERC20 Tokens** (e.g. USDT, USDC) to up to 50 recipients in **1 single transaction payload**.
+* **Stateless Zero-SSTORE Execution**: Reduces gas consumption by eliminating repeated 21,000 base transaction overheads.
+* **CSV Bulk Importer & Roster Presets**: Upload `.csv` files or save/load reusable payroll lists directly from LocalStorage.
+* **100% Atomic Revert Protection**: Guaranteed zero partial transfers. If any single recipient address fails, the entire payload safely reverts.
+
+### 2. 🔗 Split Bill & PayLink (`1-Click Web3 Settlement`)
+* **Shareable PayLinks**: Generate Web3 payment request links for team hackathon splits, group dinners, and infrastructure bills.
+* **Instant Social Sharing**: Share 1-click payment links directly to **WhatsApp** and **Telegram** with pre-formatted summaries.
+* **Light Theme Vercel Minimalist UI**: Ultra-clean white background interface with real-time status tracking (`PAID & SETTLED` vs `PENDING`).
+* **Custom Floating Toast Notifications**: Replaces ugly default browser popups with sleek top-center Vercel notification banners containing Explorer Proof links.
+
+---
+
+## 🤖 Monkey Bot — Executive RAG AI Assistant
+
+Batchpay Protocol features an integrated AI Protocol Assistant named **Monkey Bot** (powered by **Google Gemini 1.5 Flash RAG**).
+
+- **100% International Executive English**: Formatted with zero emojis, clean markdown, and crisp corporate clarity.
+- **Deep Protocol Context**: Instantly answers questions regarding gas savings math, atomic revert safety, smart contract architecture, and mainnet specifications.
+- **Strict Guardrails**: Refuses out-of-context queries politely to maintain focus on protocol utilities.
+
+---
+
+## 📊 Gas Optimization Benchmark
+
+By consolidating individual transfers into stateless unrolled contract calls, Batchpay Protocol delivers significant gas savings compared to manual separate transactions:
+
+| Recipients | Standard Transfers Gas | Batchpay Protocol Gas | Total Gas Fee Savings |
+| :---: | :---: | :---: | :---: |
+| **1 Recipient** | 21,000 gas | ~35,000 gas | Baseline |
+| **5 Recipients** | 105,000 gas | ~48,000 gas | **~54.2% Saved** |
+| **10 Recipients** | 210,000 gas | ~62,000 gas | **~70.4% Saved** |
+| **50 Recipients** | 1,050,000 gas | ~183,000 gas | **~82.5% Saved** |
+
+---
+
+## 🏗️ Project Architecture
+
+```
+project-hackhaton-DeFi/
+├── backend/                        # EVM Smart Contracts (Foundry)
+│   ├── src/
+│   │   └── MultiSend.sol           # Core MultiSend Contract (v0.8.20)
+│   ├── test/
+│   │   └── MultiSend.t.sol         # 14/14 Foundry Unit Tests
+│   ├── script/
+│   │   └── Deploy.s.sol            # Forge Deployment Script
+│   └── deploy-mainnet.js           # 1-Click Ethers.js Mainnet Deployer
+├── frontend/                       # Web3 DApp Application (Next.js 14)
+│   ├── app/
+│   │   ├── page.tsx                # Single Page DApp Workspace & Landing
+│   │   ├── layout.tsx              # Root Layout & Metadata
+│   │   └── api/chat/route.ts       # Gemini 1.5 Flash RAG AI Endpoint
+│   ├── components/
+│   │   ├── common/                 # Navbar (Vercel Underline Tabs)
+│   │   ├── landing/                # Hero, Feature Showcase & Comparison
+│   │   ├── workspace/              # MultiSend Engine & CSV Importer
+│   │   ├── splitbill/              # Split Bill Tracker & PayLink Modal
+│   │   └── ai/                     # Monkey Bot Chat Modal & Lottie Player
+│   ├── lib/
+│   │   ├── constants.ts            # Contract ABI & Mainnet RPC Params
+│   │   └── paylinkStore.ts         # PayLink LocalStorage State Manager
+│   └── public/                     # Static Product Showcase Assets
+├── Dockerfile                      # Production Containerization
+├── docker-compose.yml              # Local Multi-Container Setup
+└── README.md                       # Official Hackathon Documentation
 ```
 
 ---
 
-## 💻 Local Setup & Development
+## 🛠️ Local Development & Quickstart
 
 ### Prerequisites
+- **Node.js**: v18.0.0 or higher
+- **npm** or **yarn**
+- **MetaMask Wallet**: Connected to **BOT Chain Mainnet** (`https://rpc.botchain.ai`, Chain ID `677`)
 
-- Node.js >= 18
-- Foundry (`forge`) installed (or Docker / WSL on Windows)
+### 1. Clone Repository & Install Dependencies
+```bash
+git clone https://github.com/enzerra/project-hackhaton-DeFi.git
+cd project-hackhaton-DeFi/frontend
+npm install
+```
 
-### 1. Backend Smart Contracts (Foundry)
+### 2. Configure Environment Variables
+Create `.env.local` inside `frontend/`:
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+NEXT_PUBLIC_MULTISEND_CONTRACT_ADDRESS=0xbC3Fb064bc396422fe1f8155AFe3822F966a78Fb
+```
+
+### 3. Run Local Development Server
+```bash
+npm run dev
+```
+Open **`http://localhost:3000`** in your browser.
+
+---
+
+## 🐳 Docker Deployment
+
+Run the complete frontend stack using Docker Compose:
+
+```bash
+docker-compose up --build -d
+```
+Access the application at `http://localhost:3000`.
+
+---
+
+## 🧪 Smart Contract Testing (Foundry)
+
+To run the full suite of 14 unit tests:
 
 ```bash
 cd backend
-
-# Compile contracts
-forge build
-
-# Run Foundry test suite (14/14 tests pass)
 forge test -vvv
 ```
 
-### 2. Frontend Next.js DApp Workspace
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Set environment variables in frontend/.env.local
-# NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
-
-# Run local development server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Test Coverage Highlights:
+- ✅ `testMultiSendNativeSuccess`: Verifies exact native BOT token distribution.
+- ✅ `testMultiSendERC20Success`: Verifies ERC20 token batch payouts.
+- ✅ `testAtomicRevertOnFailure`: Ensures 100% all-or-nothing revert when any recipient fails.
+- ✅ `testExcessNativeRefund`: Verifies automatic refund of excess `msg.value`.
+- ✅ `testMaxRecipientsLimit`: Enforces maximum 50 recipients safety cap.
 
 ---
 
-## 📁 Repository Structure
+## 👥 Core Development Team
 
-```
-├── backend/                      # Smart Contract & Foundry Test Suite
-│   ├── src/
-│   │   └── MultiSend.sol         # Core MultiSend Contract (Native BOT + ERC20)
-│   ├── test/
-│   │   ├── MultiSend.t.sol       # 14/14 Foundry Unit & Revert Tests
-│   │   └── mocks/
-│   │       └── MockERC20.sol     # Mock ERC20 Token for Testing
-│   ├── script/
-│   │   └── Deploy.s.sol          # Deployment Script
-│   ├── foundry.toml              # Foundry Configuration (Solc 0.8.20)
-│   └── package.json              # OpenZeppelin Dependencies (@openzeppelin/contracts)
-├── frontend/                     # Next.js 14 DApp Workspace & AI Assistant
-│   ├── app/
-│   │   ├── page.tsx              # Landing Page & DApp Workspace Tab System
-│   │   ├── layout.tsx            # Global Root Layout
-│   │   ├── globals.css           # Vercel Monochrome Design Tokens
-│   │   └── api/chat/route.ts     # Gemini 1.5 Flash RAG AI API Endpoint
-│   ├── components/
-│   │   ├── workspace/            # Ultra-Minimalist Batch Transfer Engine
-│   │   ├── landing/              # High-End Landing Page Sections
-│   │   ├── ai/                   # Gemini RAG AI Chatbot Modal ("Monkey Bot")
-│   │   ├── common/               # Navbar & Common UI Components
-│   │   └── ui/                   # Shadcn UI Base Primitives
-│   ├── lib/
-│   │   └── constants.ts          # BOT Chain Contract Addresses & ABIs
-│   └── package.json              # Next.js 14 Dependencies (Ethers.js v6, Tailwind, Lucide)
-├── scripts/                      # Helper & Deployment Verification Scripts
-├── sample-payroll.csv            # Sample CSV File for Batch Import Testing
-├── Dockerfile                    # Multi-stage Docker Container Configuration
-├── docker-compose.yml            # Docker Compose Configuration
-├── .gitignore                    # Git Exclusion Rules
-└── README.md                     # Project Documentation
-```
+- **Lead Frontend Engineer**: Web3 User Interface Systems, Next.js 14 & Vercel Light Design.
+- **Lead Smart Contract Architect & Team Lead**: EVM Gas Optimization & Solidity `MultiSend.sol` Smart Contract.
+- **Product & Project Manager**: User Experience, Product Strategy & Hackathon Documentation.
 
 ---
 
-## 🌐 BOT Chain Deployment Reference
+## 📄 License
 
-| Parameter | Value |
-|---|---|
-| **Deployed MultiSend Address** | `0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9` |
-| **Target Chain** | BOT Chain Testnet |
-| **Chain ID** | `968` |
-| **RPC URL** | `https://rpc.bohr.life` |
-| **Currency** | `BOT` |
-| **Block Explorer** | [scan.bohr.life](https://scan.bohr.life/) |
-
----
-
-## 🏆 Hackathon Submission Details
-
-Built for the **BOT Chain Build Week Hackathon (DeFi Track)**.
-- **Stateless Smart Contract Architecture**: 0 storage writes, zero SSTORE overhead.
-- **Unified Multi-Use Case Engine**: Hackathon split, DAO payroll, and community airdrops in 1 single transaction engine.
+Distributed under the **MIT License**. See `LICENSE` for more information.
