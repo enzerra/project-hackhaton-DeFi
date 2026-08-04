@@ -3,8 +3,8 @@ import './globals.css';
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: 'BOTFlow Protocol — Vercel Minimalist Asset Distribution',
-  description: 'Atomic, multi-recipient token distribution platform for BOT Chain EVM.',
+  title: 'Batchpay Protocol — Vercel Minimalist Asset Distribution',
+  description: '1-Click MultiSend & Split Bill Engine built for BOT Chain.',
 };
 
 export default function RootLayout({

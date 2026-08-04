@@ -32,46 +32,43 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Zap className="h-5 w-5 text-white fill-white" />
           </div>
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-lg tracking-tight text-[#09090B] font-sans">
-              BOTFlow <span className="font-normal text-xs text-[#71717A]">Protocol</span>
+            <span className="font-extrabold text-sm tracking-tight text-[#09090B]">
+              Batchpay <span className="font-normal text-xs text-[#71717A]">Protocol</span>
             </span>
-            <Badge variant="outline" className="font-mono text-[9px] uppercase border-[#E4E4E7] bg-[#FAFAFA] text-[#09090B] font-bold">
-              v2.0
-            </Badge>
           </div>
         </div>
 
-        {/* CENTER TAB SWITCHER */}
-        <div className="hidden md:flex items-center p-1 rounded-2xl bg-[#FAFAFA] border border-[#E4E4E7]">
+        {/* CENTER TAB SWITCHER — VERCEL MINIMALIST UNDERLINE CONCEPT */}
+        <div className="hidden md:flex items-center gap-7 text-xs font-sans">
           <button
             onClick={() => setActiveTab('landing')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+            className={`pb-1 border-b-2 transition-all duration-200 cursor-pointer ${
               activeTab === 'landing'
-                ? 'bg-[#09090B] text-white shadow-md'
-                : 'text-[#71717A] hover:text-[#09090B]'
+                ? 'text-black font-extrabold border-black'
+                : 'text-neutral-400 hover:text-black font-medium border-transparent'
             }`}
           >
             Overview
           </button>
           <button
             onClick={() => setActiveTab('app')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+            className={`pb-1 border-b-2 transition-all duration-200 cursor-pointer ${
               activeTab === 'app'
-                ? 'bg-[#09090B] text-white shadow-md'
-                : 'text-[#71717A] hover:text-[#09090B]'
+                ? 'text-black font-extrabold border-black'
+                : 'text-neutral-400 hover:text-black font-medium border-transparent'
             }`}
           >
             MultiSend Engine
           </button>
           <button
             onClick={() => setActiveTab('splitbill')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+            className={`pb-1 border-b-2 transition-all duration-200 cursor-pointer ${
               activeTab === 'splitbill'
-                ? 'bg-[#09090B] text-white shadow-md'
-                : 'text-[#71717A] hover:text-[#09090B]'
+                ? 'text-black font-extrabold border-black'
+                : 'text-neutral-400 hover:text-black font-medium border-transparent'
             }`}
           >
-            <span>Split Bill & PayLink</span>
+            Split Bill & PayLink
           </button>
         </div>
 

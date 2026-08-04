@@ -1,31 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const SYSTEM_RAG_INSTRUCTION = `
-You are "Monkey Bot", the official, highly intelligent, articulate, warm, and professional AI Protocol Assistant for BOTFlow Protocol.
+You are "Monkey Bot", the official, highly intelligent, articulate, warm, and executive AI Protocol Assistant for Batchpay Protocol.
 
 PERSONALITY & PROFESSIONALISM GUIDELINES:
-- Maintain a warm, friendly, intelligent, and highly professional tone in Indonesian (or English if the user asks in English).
+- Maintain a warm, articulate, intelligent, and highly professional executive tone in ENGLISH.
 - DO NOT USE ANY EMOJIS in your responses to keep the interaction clean, sleek, and executive.
 - Use clean markdown formatting (bold text, bullet points, numbered lists, code snippets) to make answers structured, crisp, and easy to read.
 
 COMPLETE DEEP PROJECT RAG KNOWLEDGE BASE:
 
 1. PROTOCOL IDENTITY & PURPOSE:
-   - App Name: BOTFlow Protocol (v2.0)
+   - App Name: Batchpay Protocol (v2.0)
    - Core Mission: 1-Click Atomic Batch Token Transfer Engine built for BOT Chain Build Week Hackathon.
    - Value Proposition: Eliminates manual separate transfers, saving up to 82.5% in gas fees with 100% atomic revert safety.
 
-2. MAINNET & TESTNET COMPATIBILITY (DAPAT DIPAKAI DI MAINNET):
+2. MAINNET & TESTNET COMPATIBILITY:
    - Testnet Status: Currently deployed & active on BOT Chain Testnet (Chain ID 968).
    - Mainnet Ready: YES, 100% MAINNET & MULTI-CHAIN READY!
    - Why Mainnet Ready: MultiSend.sol is written in standard EVM Solidity (v0.8.20) with zero external dependencies. It can be deployed seamlessly to BOT Chain Mainnet, Ethereum Mainnet, Arbitrum, Optimism, Polygon, or any EVM Mainnet simply by updating the contract address and RPC in constants.ts!
 
-3. PRICING & FEES (GRATIS ATAU BAYAR):
-   - BOTFlow Protocol is 100% FREE / GRATIS to use.
+3. PRICING & FEES:
+   - BOTFlow Protocol is 100% FREE to use.
    - Protocol Platform Fee: 0% (BOTFlow charges ZERO platform fees).
-   - Gas Fee: Users only pay the standard EVM network gas fee.
+   - Gas Fee: Users only pay standard EVM network gas fees (testnet tokens available free from faucet).
 
-4. HOW IT WORKS (CARA KERJA STEP-BY-STEP):
+4. HOW IT WORKS (STEP-BY-STEP WORKFLOW):
    - Step 1: Connect MetaMask wallet to BOT Chain Testnet (Chain ID 968) or Mainnet.
    - Step 2: Choose engine mode (Native BOT or ERC20 Token like USDT/USDC).
    - Step 3: Enter recipient addresses & amounts, or select Quick Presets (Hackathon Split, DAO Payroll, Community Airdrop).
@@ -45,7 +45,7 @@ COMPLETE DEEP PROJECT RAG KNOWLEDGE BASE:
    - Chain ID: 968 (0x3C8 in hex)
    - RPC URL: https://rpc.bohr.life
    - Explorer URL: https://scan.bohr.life/
-   - Contract Address: 0x76a5A3a1eC8AA32d7Fc7BD7D4Cd9c779a59Ef881 (100% Verified Source Code)
+   - Contract Address: 0xd6A0A8E18934Bb04eb1787De1C7bD48013579935 (100% Verified Source Code)
    - Smart Contract Language: Solidity v0.8.20 (MultiSend.sol)
    - Testing Suite: Tested with Foundry (14/14 Unit Tests PASS with 100% line coverage and invariant checks).
 
@@ -60,14 +60,14 @@ COMPLETE DEEP PROJECT RAG KNOWLEDGE BASE:
 
 10. CORE FOUNDERS & TEAM:
     - Founder 1: Lead Frontend Engineer — Expert in React 18, Next.js 14, TailwindCSS, & Web3 Interface Systems.
-    - Founder 2 (Ketua Tim): Lead Smart Contract Architect & Ketua Tim — Expert in Solidity v0.8.20, EVM Gas Optimization, & Atomic Engine.
+    - Founder 2 (Team Lead): Lead Smart Contract Architect & Team Lead — Expert in Solidity v0.8.20, EVM Gas Optimization, & Atomic Engine.
     - Founder 3: Project Manager — Expert in Agile Execution, Web3 Product Strategy, & User Experience.
 
 STRICT GUARDRAIL INSTRUCTIONS:
-1. You are allowed to answer ANY question related to BOTFlow Protocol, BOT Chain Testnet, Mainnet readiness, EVM gas savings, pricing/free status, how it works, smart contracts, atomic reverts, presets, dual engine, capacity, founders, and testing without limits.
+1. Answer in articulate, high-level ENGLISH at all times.
 2. DO NOT USE ANY EMOJIS IN YOUR RESPONSE.
-3. If the user asks ANY question OUTSIDE of this project context (e.g. food recipes, sports, politics, movies, general entertainment, or coding unrelated to BOTFlow), politely & professionally refuse:
-   "Maaf, saya adalah Monkey Bot, asisten resmi BOTFlow Protocol. Saya khusus dilatih untuk menjawab pertanyaan seputar BOTFlow Protocol, penghematan gas fee, cara kerja, kesiapan Mainnet, keamanan atomic revert, dan eksekusi jaringan BOT Chain. Ada yang dapat saya bantu terkait proyek BOTFlow hari ini?"
+3. If the user asks ANY question OUTSIDE of this project context (e.g. food recipes, sports, politics, movies, general entertainment, or coding unrelated to BOTFlow), politely & professionally refuse in English:
+   "I am Monkey Bot, the official AI Protocol Assistant for BOTFlow Protocol. I am specialized to assist with questions regarding BOTFlow Protocol, gas fee optimization, atomic revert security, Mainnet readiness, and BOT Chain execution. How may I assist you with the BOTFlow project today?"
 `;
 
 export async function POST(req: NextRequest) {
@@ -83,16 +83,16 @@ export async function POST(req: NextRequest) {
 
     // Out-of-context keyword inspection for professional guardrail response
     const outOfContextKeywords = [
-      'recipe', 'resep', 'pizza', 'cooking', 'masak', 'football', 'sepakbola', 'soccer',
-      'weather', 'cuaca', 'movie', 'film', 'president', 'presiden', 'joke', 'lelucon',
-      'lagu', 'song', 'capital of', 'who is elon', 'python code for game', 'cerita'
+      'recipe', 'cooking', 'masak', 'football', 'soccer',
+      'weather', 'movie', 'film', 'president', 'presiden', 'joke', 'lelucon',
+      'song', 'capital of', 'who is elon', 'python code for game'
     ];
 
     const isOutOfContext = outOfContextKeywords.some((kw) => lowerMsg.includes(kw));
 
     if (isOutOfContext) {
       return NextResponse.json({
-        reply: 'Maaf, saya adalah Monkey Bot, asisten resmi BOTFlow Protocol. Saya khusus dilatih untuk menjawab pertanyaan seputar BOTFlow Protocol, penghematan gas fee, cara kerja, kesiapan Mainnet, keamanan atomic revert, dan eksekusi jaringan BOT Chain. Ada yang dapat saya bantu terkait proyek BOTFlow hari ini?',
+        reply: 'I am Monkey Bot, the official AI Protocol Assistant for BOTFlow Protocol. I am specialized to assist with questions regarding BOTFlow Protocol, gas fee optimization, atomic revert security, Mainnet readiness, and BOT Chain execution. How may I assist you with the BOTFlow project today?',
       });
     }
 
@@ -127,13 +127,13 @@ export async function POST(req: NextRequest) {
         const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (replyText) {
           // Remove any emojis if generated by AI
-          const cleanReply = replyText.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+          const cleanReply = replyText.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
           return NextResponse.json({ reply: cleanReply });
         }
       }
     }
 
-    // EMOJI-FREE PROFESSIONAL RAG MATRIX (Active for offline / standalone demo mode)
+    // EMOJI-FREE PROFESSIONAL ENGLISH RAG MATRIX (Offline / fallback mode)
     let fallbackReply = '';
 
     // 1. MAINNET & TESTNET COMPATIBILITY
@@ -141,54 +141,53 @@ export async function POST(req: NextRequest) {
       lowerMsg.includes('mainnet') || lowerMsg.includes('testnet') || lowerMsg.includes('bisa mainnet') ||
       lowerMsg.includes('siap mainnet') || lowerMsg.includes('multi chain')
     ) {
-      fallbackReply = 'BOTFlow Protocol **100% MAINNET READY**.\n\n**Spesifikasi Kesiapan Mainnet:**\n- Smart contract `MultiSend.sol` ditulis menggunakan standar EVM Solidity v0.8.20 murni tanpa ketergantungan pustaka eksternal (*zero external dependencies*).\n- Protokol ini dapat dideploy secara langsung (*drop-in deployment*) ke **BOT Chain Mainnet**, **Ethereum Mainnet**, **Arbitrum**, **Optimism**, **Polygon**, atau EVM Chain mana pun hanya dengan memperbarui alamat kontrak dan RPC di konfigurasi frontend.';
+      fallbackReply = 'BOTFlow Protocol is **100% MAINNET READY**.\n\n**Mainnet Specifications:**\n- Smart contract `MultiSend.sol` is written in standard EVM Solidity v0.8.20 with zero external dependencies.\n- Drop-in deployment to **BOT Chain Mainnet**, **Ethereum Mainnet**, **Arbitrum**, **Optimism**, **Polygon**, or any EVM Mainnet simply by updating the contract address and RPC endpoint.';
     }
-    // 2. CARA KERJA / HOW IT WORKS
+    // 2. HOW IT WORKS
     else if (
       lowerMsg.includes('cara kerja') || lowerMsg.includes('gimana cara') || lowerMsg.includes('bagaimana cara') ||
-      lowerMsg.includes('how it works') || lowerMsg.includes('caranya') || lowerMsg.includes('proses') ||
-      lowerMsg.includes('langkah') || lowerMsg.includes('alur') || lowerMsg.includes('pakai') || lowerMsg.includes('penggunaan')
+      lowerMsg.includes('how it works') || lowerMsg.includes('how to use') || lowerMsg.includes('workflow') ||
+      lowerMsg.includes('step') || lowerMsg.includes('process')
     ) {
-      fallbackReply = 'Berikut adalah alur kerja BOTFlow Protocol:\n\n1. **Konek Wallet**: Hubungkan MetaMask ke jaringan BOT Chain Testnet/Mainnet.\n2. **Pilih Mode**: Pilih mode **Native BOT** atau **ERC20 Token** (USDT, USDC, dll).\n3. **Isi Penerima**: Masukkan alamat wallet & nominal, atau pilih **Quick Presets** (Hackathon Split, DAO Payroll, Airdrop).\n4. **Eksekusi 1-Klik**: Klik *Execute Atomic Distribution*. Smart contract (`MultiSend.sol`) memproses seluruh transfer dalam **1 transaksi tunggal** secara atomik (< 2.5 detik).';
+      fallbackReply = 'Here is the step-by-step workflow of BOTFlow Protocol:\n\n1. **Connect Wallet**: Connect MetaMask to BOT Chain Testnet/Mainnet.\n2. **Select Mode**: Choose **Native BOT** or **ERC20 Token** (USDT, USDC, etc).\n3. **Set Recipients**: Enter recipient addresses & amounts, or click **Quick Presets** (Hackathon Split, DAO Payroll, Airdrop).\n4. **Execute 1-Click**: Click *Execute Atomic Distribution*. Smart contract (`MultiSend.sol`) executes all transfers in **1 single atomic payload** (< 2.5 seconds).';
     }
-    // 3. PRICING / GRATIS ATAU BAYAR
+    // 3. PRICING / FREE OR PAID
     else if (
       lowerMsg.includes('gratis') || lowerMsg.includes('bayar') || lowerMsg.includes('biaya') ||
-      lowerMsg.includes('free') || lowerMsg.includes('tarif') || lowerMsg.includes('cost') ||
-      lowerMsg.includes('potongan') || lowerMsg.includes('sewa') || lowerMsg.includes('harga') || lowerMsg.includes('berbayar')
+      lowerMsg.includes('free') || lowerMsg.includes('fee') || lowerMsg.includes('cost') || lowerMsg.includes('price')
     ) {
-      fallbackReply = 'BOTFlow Protocol **100% GRATIS** digunakan.\n\n- **Platform Fee**: **0%** (Sistem tidak mengambil potongan biaya sama sekali).\n- **Gas Fee**: Pengguna hanya membayar biaya gas standar jaringan, di mana untuk testnet token BOT dapat diperoleh secara gratis dari faucet resmi.';
+      fallbackReply = 'BOTFlow Protocol is **100% FREE** to use.\n\n- **Platform Fee**: **0%** (The protocol charges ZERO service fees).\n- **Gas Fee**: Users only pay standard EVM network gas fee (testnet BOT tokens can be claimed free from faucet).';
     }
     // 4. GAS SAVINGS MATH
     else if (
-      lowerMsg.includes('gas') || lowerMsg.includes('fee') || lowerMsg.includes('hemat') || lowerMsg.includes('save') || lowerMsg.includes('murah') || lowerMsg.includes('efisiensi')
+      lowerMsg.includes('gas') || lowerMsg.includes('save') || lowerMsg.includes('hemat') || lowerMsg.includes('math') || lowerMsg.includes('efficiency')
     ) {
-      fallbackReply = 'BOTFlow Protocol menghemat antara **64.2% hingga 82.5% total biaya gas**.\n\n**Mekanisme Penghematan:**\nBOTFlow menggabungkan puluhan transfer menjadi 1 transaksi tunggal (*stateless zero-SSTORE execution*), mengeliminasi pengulangan biaya dasar gas (*21,000 gas per transaksi*).';
+      fallbackReply = 'BOTFlow Protocol saves between **64.2% and 82.5% in total gas fees**.\n\n**Optimization Mechanism:**\nCombines up to 50 recipient transfers into 1 single payload (*stateless zero-SSTORE execution*), eliminating repeated base transaction overhead (21,000 gas per tx).';
     }
     // 5. ATOMIC REVERT SAFETY
     else if (
-      lowerMsg.includes('revert') || lowerMsg.includes('atomic') || lowerMsg.includes('aman') ||
-      lowerMsg.includes('safe') || lowerMsg.includes('keamanan') || lowerMsg.includes('security') || lowerMsg.includes('gagal') || lowerMsg.includes('hilang') || lowerMsg.includes('rugi')
+      lowerMsg.includes('revert') || lowerMsg.includes('atomic') || lowerMsg.includes('safe') ||
+      lowerMsg.includes('security') || lowerMsg.includes('fail') || lowerMsg.includes('loss')
     ) {
-      fallbackReply = 'Keamanan BOTFlow terjamin dengan mekanisme **100% Atomic Revert Protection** di EVM Solidity.\n\n**Prinsip All-or-Nothing:**\nJika salah satu alamat penerima gagal (misal salah alamat atau out of gas), seluruh transaksi otomatis dibatalkan (*revert*) dan sisa dana 100% aman di wallet tanpa risiko kehilangan sebagian.';
+      fallbackReply = 'BOTFlow security is backed by **100% Atomic Revert Protection** in EVM Solidity.\n\n**All-or-Nothing Rule:**\nIf any single recipient address fails (e.g. invalid address or out of gas), the EVM automatically reverts all transfers, leaving 0% partial loss risk. All funds remain 100% safe in your wallet.';
     }
     // 6. SMART CONTRACT & NETWORK SPECS
     else if (
-      lowerMsg.includes('contract') || lowerMsg.includes('alamat') || lowerMsg.includes('address') ||
-      lowerMsg.includes('chain') || lowerMsg.includes('network') || lowerMsg.includes('rpc') || lowerMsg.includes('explorer') || lowerMsg.includes('bohr')
+      lowerMsg.includes('contract') || lowerMsg.includes('address') || lowerMsg.includes('chain') ||
+      lowerMsg.includes('network') || lowerMsg.includes('rpc') || lowerMsg.includes('explorer')
     ) {
-      fallbackReply = 'Berikut detail Spesifikasi Smart Contract resmi BOTFlow:\n\n- **Network**: BOT Chain Testnet (Chain ID 968) / Mainnet Ready\n- **RPC**: `https://rpc.bohr.life`\n- **Contract Address**: `0x76a5A3a1eC8AA32d7Fc7BD7D4Cd9c779a59Ef881`\n- **Status**: 100% Verified Source Code & 14/14 Foundry Tests PASS.';
+      fallbackReply = 'Here are the official Batchpay Protocol Smart Contract Specifications:\n\n- **Network**: BOT Chain Mainnet / Testnet (Chain ID 968)\n- **RPC**: `https://rpc.bohr.life`\n- **Mainnet Contract Address**: `0xbCe6c5d4742EAad84d28A2eBf702CCc0589bcB20`\n- **Status**: 100% Live on Mainnet & 14/14 Foundry Tests PASS.';
     }
     // 7. CORE FOUNDERS & TEAM
     else if (
-      lowerMsg.includes('founder') || lowerMsg.includes('tim') || lowerMsg.includes('team') ||
-      lowerMsg.includes('ketua') || lowerMsg.includes('leader') || lowerMsg.includes('pembuat') || lowerMsg.includes('developer')
+      lowerMsg.includes('founder') || lowerMsg.includes('team') || lowerMsg.includes('lead') ||
+      lowerMsg.includes('developer') || lowerMsg.includes('creator')
     ) {
-      fallbackReply = 'Berikut adalah tim pengembang BOTFlow Protocol:\n\n1. **Founder 1**: Lead Frontend Engineer (Spesialis React 18, Next.js & Web3 Interface Systems)\n2. **Founder 2 (Ketua Tim)**: Lead Smart Contract Architect & Ketua Tim (Spesialis Solidity v0.8.20 & EVM Gas Optimization)\n3. **Founder 3**: Project Manager (Spesialis Agile Strategy & Product UX)';
+      fallbackReply = 'Here is the core development team behind BOTFlow Protocol:\n\n1. **Founder 1**: Lead Frontend Engineer (React 18, Next.js 14 & Web3 Interface Systems)\n2. **Founder 2 (Team Lead)**: Lead Smart Contract Architect & Team Lead (Solidity v0.8.20 & EVM Gas Optimization)\n3. **Founder 3**: Project Manager (Agile Strategy & Product UX)';
     }
     // FALLBACK GENERAL RESPONSE
     else {
-      fallbackReply = 'Halo. Saya adalah **Monkey Bot**, asisten resmi BOTFlow Protocol.\n\nBOTFlow Protocol **100% Mainnet Ready** dan dapat digunakan di BOT Chain Testnet maupun Mainnet dengan efisiensi gas hingga 82.5% dan keamanan atomik 100%. Ada yang dapat saya bantu?';
+      fallbackReply = 'Hello. I am **Monkey Bot**, the official AI Protocol Assistant for BOTFlow Protocol.\n\nBOTFlow Protocol is **100% Mainnet Ready** and active on BOT Chain with up to 82.5% gas savings and 100% atomic revert safety. How may I assist you with the project today?';
     }
 
     return NextResponse.json({ reply: fallbackReply });
@@ -196,7 +195,7 @@ export async function POST(req: NextRequest) {
     console.error('Gemini API Error:', err);
     return NextResponse.json(
       {
-        reply: 'Maaf, saya adalah Monkey Bot, asisten resmi BOTFlow Protocol. Ada yang dapat saya bantu terkait proyek BOTFlow hari ini?',
+        reply: 'I am Monkey Bot, the official AI Protocol Assistant for BOTFlow Protocol. How may I assist you with the project today?',
       },
       { status: 200 }
     );

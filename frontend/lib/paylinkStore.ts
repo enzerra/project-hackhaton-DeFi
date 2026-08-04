@@ -18,7 +18,7 @@ const STORAGE_KEY = 'botflow_paylink_items';
 const DEFAULT_SAMPLE_PAYLINKS: PayLinkItem[] = [
   {
     id: 'PAY-DEMO1',
-    title: 'Patungan Coffee & Lunch Hackathon',
+    title: 'Hackathon Coffee & Lunch Split',
     payeeAddress: '0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9',
     amount: '2.5',
     isNative: true,
@@ -31,7 +31,7 @@ const DEFAULT_SAMPLE_PAYLINKS: PayLinkItem[] = [
   },
   {
     id: 'PAY-DEMO2',
-    title: 'Sewa Server Cloud & Domain Split',
+    title: 'Cloud Server Infrastructure Split',
     payeeAddress: '0x9118EA4a52C6c7873729c8d8702cCd85E573f9E9',
     amount: '10.0',
     isNative: true,

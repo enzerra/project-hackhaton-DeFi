@@ -33,6 +33,8 @@ interface WorkspaceDashboardProps {
   onRemoveRecipient: (id: string) => void;
   onUpdateRecipient: (id: string, field: 'address' | 'amount', value: string) => void;
   onApplyPreset: (type: 'hackathon' | 'payroll' | 'airdrop') => void;
+  onImportCsv?: (fileRecipients: { address: string; amount: string }[]) => void;
+  fetchERC20Details?: (contractAddr: string) => void;
   totalAmount: number;
   isExecuting: boolean;
   isApproving: boolean;
@@ -386,7 +388,7 @@ export const WorkspaceDashboard: React.FC<WorkspaceDashboardProps> = ({
           <div className="flex justify-between items-center text-xs">
             <span className="text-neutral-500">Total Aggregate Amount</span>
             <span className="font-mono text-base font-bold text-[#171717]">
-              {totalAmount.toFixed(4)} {isNativeMode ? 'BOT' : erc20Symbol}
+              {(Number(totalAmount) || 0).toFixed(4)} {isNativeMode ? 'BOT' : erc20Symbol}
             </span>
           </div>
 
@@ -401,15 +403,31 @@ export const WorkspaceDashboard: React.FC<WorkspaceDashboardProps> = ({
             </button>
           )}
 
-          <button
-            type="button"
-            onClick={onExecute}
-            disabled={isExecuting}
-            className="w-full py-3.5 rounded-xl bg-black text-white font-extrabold text-sm flex items-center justify-center gap-2 hover:bg-neutral-800 transition-all shadow-sm disabled:opacity-50 cursor-pointer"
-          >
-            <Zap className="w-4 h-4 fill-white text-white" />
-            <span>{isExecuting ? 'Executing Transfer...' : 'Execute Batch Transfer'}</span>
-          </button>
+          {!isConnected ? (
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={onConnectWallet}
+                className="w-full py-3.5 rounded-xl bg-black text-white font-extrabold text-xs flex items-center justify-center gap-2 hover:bg-neutral-800 transition-all shadow-md cursor-pointer"
+              >
+                <Wallet className="w-4 h-4 text-white" />
+                <span>Connect Wallet to Execute Batch Payout</span>
+              </button>
+              <p className="text-[11px] font-mono text-center text-neutral-400">
+                You can explore features & fill data freely. Connect wallet when ready to sign on-chain.
+              </p>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={onExecute}
+              disabled={isExecuting}
+              className="w-full py-3.5 rounded-xl bg-black text-white font-extrabold text-sm flex items-center justify-center gap-2 hover:bg-neutral-800 transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+            >
+              <Zap className="w-4 h-4 fill-white text-white" />
+              <span>{isExecuting ? 'Executing Transfer...' : 'Execute Batch Transfer'}</span>
+            </button>
+          )}
 
           {statusMsg && (
             <div className="p-2.5 rounded-xl bg-neutral-100 border border-black/[0.08] text-xs font-mono text-neutral-700 text-center">
