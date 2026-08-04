@@ -1,17 +1,17 @@
 export const CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_MULTISEND_CONTRACT_ADDRESS ||
-  '0xbCe6c5d4742EAad84d28A2eBf702CCc0589bcB20';
+  '0xbC3Fb064bc396422fe1f8155AFe3822F966a78Fb';
 
 export const BOTCHAIN_TESTNET_PARAMS = {
-  chainId: '0x3C8', // 968 in hex
-  chainName: 'BOT Chain Testnet',
+  chainId: '0x2A5', // 677 in hex (BOT Chain Mainnet)
+  chainName: 'BOT Chain Mainnet',
   nativeCurrency: {
     name: 'BOT',
     symbol: 'BOT',
     decimals: 18,
   },
-  rpcUrls: ['https://rpc.bohr.life'],
-  blockExplorerUrls: ['https://scan.bohr.life/'],
+  rpcUrls: ['https://rpc.botchain.ai'],
+  blockExplorerUrls: ['https://scan.botchain.ai/'],
 };
 
 export const MULTISEND_ABI = [

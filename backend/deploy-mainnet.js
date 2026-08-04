@@ -2,7 +2,7 @@ const { ethers } = require('../frontend/node_modules/ethers');
 const fs = require('fs');
 const path = require('path');
 
-const RPC_URL = 'https://rpc.bohr.life';
+const RPC_URL = 'https://rpc.botchain.ai';
 const PRIVATE_KEY = process.argv[2];
 
 if (!PRIVATE_KEY) {

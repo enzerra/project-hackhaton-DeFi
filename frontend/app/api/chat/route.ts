@@ -176,7 +176,7 @@ export async function POST(req: NextRequest) {
       lowerMsg.includes('contract') || lowerMsg.includes('address') || lowerMsg.includes('chain') ||
       lowerMsg.includes('network') || lowerMsg.includes('rpc') || lowerMsg.includes('explorer')
     ) {
-      fallbackReply = 'Here are the official Batchpay Protocol Smart Contract Specifications:\n\n- **Network**: BOT Chain Mainnet / Testnet (Chain ID 968)\n- **RPC**: `https://rpc.bohr.life`\n- **Mainnet Contract Address**: `0xbCe6c5d4742EAad84d28A2eBf702CCc0589bcB20`\n- **Status**: 100% Live on Mainnet & 14/14 Foundry Tests PASS.';
+      fallbackReply = 'Here are the official Batchpay Protocol Smart Contract Specifications:\n\n- **Network**: BOT Chain Mainnet (Chain ID 677)\n- **RPC**: `https://rpc.botchain.ai`\n- **Explorer**: `https://scan.botchain.ai`\n- **Mainnet Contract Address**: `0xbC3Fb064bc396422fe1f8155AFe3822F966a78Fb`\n- **Status**: 100% Live on Mainnet & 14/14 Foundry Tests PASS.';
     }
     // 7. CORE FOUNDERS & TEAM
     else if (
