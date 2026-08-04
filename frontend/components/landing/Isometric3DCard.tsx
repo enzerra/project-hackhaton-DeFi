@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Layers, ShieldCheck, Zap, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { CONTRACT_ADDRESS } from '../../lib/constants';
+import { CONTRACT_ADDRESS } from '@/lib/constants';
 
 export const Isometric3DCard: React.FC = () => {
   return (

@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-lib/
+backend/lib/
 
 # Next.js & Frontend Build Artifacts
 .next/

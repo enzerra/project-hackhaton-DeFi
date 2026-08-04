@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Zap, ExternalLink, Activity } from 'lucide-react';
-import { CONTRACT_ADDRESS } from '../../lib/constants';
+import { CONTRACT_ADDRESS } from '@/lib/constants';
 import { TypewriterHeadline } from './TypewriterHeadline';
 import { Isometric3DCard } from './Isometric3DCard';
 
@@ -33,7 +33,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onOpenApp }) => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-base sm:text-lg text-[#52525B] leading-relaxed max-w-xl font-normal"
             >
-              Batch multi-wallet payouts for Hackathons, DAO Payroll, and Airdrops in <strong>1 single transaction</strong>. Guaranteed zero partial transfer failures.
+              MultiSend atomic batch payouts and 1-click Split Bill PayLinks built for BOT Chain. <strong>Up to 82.5% gas savings</strong> with 100% all-or-nothing atomic revert safety.
             </motion.p>
 
             {/* PRIMARY MONOCHROME CTAS (NO WRAPPING) */}

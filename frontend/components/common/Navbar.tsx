@@ -9,8 +9,8 @@ interface NavbarProps {
   isConnected: boolean;
   onConnect: () => void;
   onDisconnect: () => void;
-  activeTab: 'landing' | 'app';
-  setActiveTab: (tab: 'landing' | 'app') => void;
+  activeTab: 'landing' | 'app' | 'splitbill';
+  setActiveTab: (tab: 'landing' | 'app' | 'splitbill') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -32,36 +32,43 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Zap className="h-5 w-5 text-white fill-white" />
           </div>
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-lg tracking-tight text-[#09090B] font-sans">
-              BOTFlow <span className="font-normal text-xs text-[#71717A]">Protocol</span>
+            <span className="font-extrabold text-sm tracking-tight text-[#09090B]">
+              Batchpay <span className="font-normal text-xs text-[#71717A]">Protocol</span>
             </span>
-            <Badge variant="outline" className="font-mono text-[9px] uppercase border-[#E4E4E7] bg-[#FAFAFA] text-[#09090B] font-bold">
-              v2.0
-            </Badge>
           </div>
         </div>
 
-        {/* CENTER TAB SWITCHER */}
-        <div className="hidden md:flex items-center p-1 rounded-2xl bg-[#FAFAFA] border border-[#E4E4E7]">
+        {/* CENTER TAB SWITCHER — VERCEL MINIMALIST UNDERLINE CONCEPT */}
+        <div className="hidden md:flex items-center gap-7 text-xs font-sans">
           <button
             onClick={() => setActiveTab('landing')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+            className={`pb-1 border-b-2 transition-all duration-200 cursor-pointer ${
               activeTab === 'landing'
-                ? 'bg-[#09090B] text-white shadow-md'
-                : 'text-[#71717A] hover:text-[#09090B]'
+                ? 'text-black font-extrabold border-black'
+                : 'text-neutral-400 hover:text-black font-medium border-transparent'
             }`}
           >
             Overview
           </button>
           <button
             onClick={() => setActiveTab('app')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+            className={`pb-1 border-b-2 transition-all duration-200 cursor-pointer ${
               activeTab === 'app'
-                ? 'bg-[#09090B] text-white shadow-md'
-                : 'text-[#71717A] hover:text-[#09090B]'
+                ? 'text-black font-extrabold border-black'
+                : 'text-neutral-400 hover:text-black font-medium border-transparent'
             }`}
           >
-            Launch DApp Workspace
+            MultiSend Engine
+          </button>
+          <button
+            onClick={() => setActiveTab('splitbill')}
+            className={`pb-1 border-b-2 transition-all duration-200 cursor-pointer ${
+              activeTab === 'splitbill'
+                ? 'text-black font-extrabold border-black'
+                : 'text-neutral-400 hover:text-black font-medium border-transparent'
+            }`}
+          >
+            Split Bill & PayLink
           </button>
         </div>
 
@@ -73,7 +80,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setShowWalletMenu(!showWalletMenu)}
                 className="px-4 py-2 text-xs font-bold font-mono flex items-center gap-2 bg-[#09090B] text-white rounded-xl hover:bg-[#27272A] cursor-pointer shadow-md"
               >
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-white" />
                 <span>{userAddress.substring(0, 6)}...{userAddress.substring(38)}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
               </button>

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Zap, ShieldCheck, Wallet, ArrowRight, CheckCircle2, Upload, Plus, Trash2 } from 'lucide-react';
-import { CONTRACT_ADDRESS } from '../../lib/constants';
+import { CONTRACT_ADDRESS } from '@/lib/constants';
 
 interface AppMockupSectionProps {
   onOpenApp: () => void;
